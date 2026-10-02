@@ -23,11 +23,11 @@ interface AdminPropertiesTableProps {
   properties: AdminProperty[];
 }
 
-const ASSET_CLASSES = ["All Types", "Office", "Retail", "Logistics", "Hospitality", "Commercial Land"];
+const ASSET_CLASSES = ["All Types", "Office", "Commercial Space"];
 const STATUS_TABS = [
-  { label: "All Assets", value: "All" },
-  { label: "Occupied (Yield-generating)", value: "Occupied (Yield-generating)" },
-  { label: "Vacant (Available immediately)", value: "Vacant (Available immediately)" },
+  { label: "All Properties", value: "All" },
+  { label: "Available", value: "Vacant" },
+  { label: "Rented", value: "Occupied" },
 ];
 
 export default function AdminPropertiesTable({ properties }: AdminPropertiesTableProps) {
@@ -44,7 +44,7 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
   const [sortBy, setSortBy] = useState("newest");
 
   const handleDelete = async (id: string | number) => {
-    if (!confirm("Are you sure you want to delete this commercial asset? This action cannot be undone.")) return;
+    if (!confirm("Are you sure you want to delete this property? This action cannot be undone.")) return;
 
     setDeletingId(id);
     try {
@@ -75,8 +75,8 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
       const matchesStatus =
         selectedStatusTab === "All" ||
         property.status === selectedStatusTab ||
-        (selectedStatusTab === "Occupied (Yield-generating)" && (property.status === "Occupied" || property.status === "For Sale")) ||
-        (selectedStatusTab === "Vacant (Available immediately)" && (property.status === "Vacant" || property.status === "For Rent"));
+        (selectedStatusTab === "Occupied" && (property.status === "Occupied" || property.status === "For Rent")) ||
+        (selectedStatusTab === "Vacant" && (property.status === "Vacant" || property.status === "For Rent"));
       const matchesType = selectedType === "All Types" || property.type === selectedType;
 
       return matchesSearch && matchesStatus && matchesType;
@@ -117,14 +117,14 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
             })}
           </div>
 
-          {/* Right controls: Asset Class + Sort */}
+          {/* Right controls: Space Type + Sort */}
           <div className="flex flex-wrap items-center gap-3">
-            {/* Asset Class Filter */}
+            {/* Space Type Filter */}
             <div className="relative min-w-[170px]">
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                aria-label="Filter by asset class"
+                aria-label="Filter by space type"
                 className="w-full appearance-none bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg text-xs uppercase font-semibold tracking-wider text-[#0F172A] focus:outline-none focus:border-[#0F766E] cursor-pointer"
               >
                 {ASSET_CLASSES.map((t) => (
@@ -146,8 +146,8 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
-                <option value="price-desc">Valuation: High to Low</option>
-                <option value="price-asc">Valuation: Low to High</option>
+                <option value="price-desc">Rent: High to Low</option>
+                <option value="price-asc">Rent: Low to High</option>
               </select>
               <ArrowUpDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             </div>
@@ -161,7 +161,7 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by Commercial Asset Title, Nairobi Corridor, or UUID..."
+            placeholder="Search by Property Title, Location, or UUID..."
             className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:border-[#0F766E]"
           />
         </div>
@@ -174,16 +174,16 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
             className="text-xs uppercase font-bold tracking-widest text-[#0F172A]"
             style={{ fontFamily: "Cinzel, Georgia, serif" }}
           >
-            Commercial Assets Inventory
+            Properties List
           </h2>
           <span className="text-xs font-mono text-slate-500">
-            Showing {filteredProperties.length} of {propsList.length} assets
+            Showing {filteredProperties.length} of {propsList.length} properties
           </span>
         </div>
 
         {filteredProperties.length === 0 ? (
           <div className="py-16 text-center text-slate-500">
-            <p className="text-sm uppercase tracking-wider font-semibold">No commercial assets matched your criteria.</p>
+            <p className="text-sm uppercase tracking-wider font-semibold">No properties matched your criteria.</p>
             <button
               onClick={() => {
                 setSearchTerm("");
@@ -242,9 +242,9 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
                       <p className="text-xs text-slate-500">
                         {prop.location} &middot;{" "}
                         <span className="font-semibold text-[#0F766E]">
-                          Ksh {Number(prop.price).toLocaleString()}
+                          Ksh {Number(prop.price).toLocaleString()} /mo
                         </span>
-                        {prop.area ? ` · ${Number(prop.area).toLocaleString()} sqft GLA` : ""}
+                        {prop.area ? ` · ${Number(prop.area).toLocaleString()} sq ft` : ""}
                       </p>
                     </div>
                   </div>
@@ -269,7 +269,7 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
                           className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-1.5 px-4 py-2 border border-[#0F766E] text-[#0F766E] hover:bg-[#0F766E] hover:text-white rounded-lg text-xs uppercase font-bold tracking-wider transition-colors cursor-pointer"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
-                          <span>Edit Dossier</span>
+                          <span>Edit</span>
                         </button>
                       </DialogTrigger>
 
@@ -293,7 +293,7 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
                       className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-1.5 px-4 py-2 bg-[#0F172A] hover:bg-rose-700 text-white rounded-lg text-xs uppercase font-bold tracking-wider transition-colors cursor-pointer disabled:opacity-50"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>{deletingId === prop.id ? "Purging..." : "Delete"}</span>
+                      <span>{deletingId === prop.id ? "Deleting..." : "Delete"}</span>
                     </button>
                   </div>
                 </div>

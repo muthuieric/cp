@@ -41,13 +41,13 @@ export default async function AdminViewPage() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <span className="text-[#14B8A6] text-[10px] tracking-[0.35em] uppercase font-semibold block mb-2">
-                Executive Inventory Console
+                Properties Dashboard
               </span>
               <h1
                 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight"
                 style={{ fontFamily: "Cinzel, Georgia, serif" }}
               >
-                Commercial Portfolio Assets
+                Commercial Properties
               </h1>
               <p className="text-white/60 text-xs sm:text-sm mt-2 font-light">
                 Live oversight of institutional assets, floor plate inventory, valuations, and yield parameters.
@@ -101,7 +101,7 @@ export default async function AdminViewPage() {
                   <DollarSign className="w-5 h-5 text-[#14B8A6]" />
                 </div>
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Portfolio Valuation
+                  Total Monthly Rent
                 </span>
               </div>
               <span
@@ -118,7 +118,7 @@ export default async function AdminViewPage() {
                   <Maximize2 className="w-5 h-5 text-[#14B8A6]" />
                 </div>
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Gross Lettable Area (GLA)
+                  Total Space
                 </span>
               </div>
               <span

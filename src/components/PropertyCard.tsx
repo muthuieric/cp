@@ -18,7 +18,7 @@ interface Property {
   location: string;
   price: string;
   type: string;
-  status: "For Sale" | "For Rent";
+  status: "For Rent" | "For Rent" | "Occupied" | "Vacant" | string;
   bedrooms: number;
   bathrooms: number;
   area: string;
@@ -93,7 +93,7 @@ const PropertyCard = ({ property, href, showCompare = true }: PropertyCardProps)
         {/* Status Badge */}
         <Badge
           className={`absolute top-4 left-4 ${
-            property.status === "For Sale"
+            property.status === "For Rent"
               ? "bg-success text-success-foreground"
               : "bg-[#0F766E] text-primary"
           }`}

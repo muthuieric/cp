@@ -13,34 +13,36 @@ export default function Home() {
   const stats = [
     { value: "150+", label: "Properties" },
     { value: "12 Years", label: "Experience" },
-    { value: "Ksh 50B+", label: "Transacted" },
+    // { value: "Ksh 50B+", label: "Transacted" },
   ];
 
   const whyCards = [
     {
       icon: Building2,
-      title: "Market Intelligence",
-      body: "Data-driven acquisition strategy informed by granular Nairobi micro-market analytics and macro-economic indicators.",
+      title: "Prime Commercial Corridors",
+      body: "Handpicked Grade A office towers and commercial spaces located in Nairobi's most accessible business nodes.",
     },
     {
       icon: BarChart2,
-      title: "Portfolio Performance",
-      body: "Consistent above-market returns across office, retail and logistics asset classes through cycle-tested management.",
+      title: "Flexible Workspace Formats",
+      body: "From fully fitted, plug-and-play offices to expansive column-free floor plates tailored to your team.",
     },
     {
       icon: Shield,
-      title: "Due Diligence",
-      body: "Rigorous legal, structural and environmental assessment on every asset before any capital commitment.",
+      title: "Transparent Lease Terms",
+      body: "Clear base rent, inclusive service charge breakdowns, and predictable agreements with zero surprise costs.",
     },
     {
       icon: Globe,
-      title: "Network Access",
-      body: "Tier-1 tenant relationships with multinationals, NGOs and fast-growing regional enterprises seeking Grade A space.",
+      title: "Dedicated Tenant Support",
+      body: "Reliable 24/7 power backup, high-speed fiber redundancy, top-tier security, and on-site facility management.",
     },
   ];
 
   const formatPrice = (price: number) =>
-    `Ksh ${(price / 1_000_000).toFixed(1)}M`;
+    price >= 1_000_000
+      ? `Ksh ${(price / 1_000_000).toFixed(1)}M/mo`
+      : `Ksh ${price.toLocaleString()}/mo`;
 
   return (
     <>
@@ -95,8 +97,7 @@ export default function Home() {
 
               {/* Body */}
               <p className="text-white/60 text-lg font-light max-w-md leading-relaxed">
-                We acquire, develop and lease Grade A commercial assets across
-                Nairobi&apos;s most strategic corridors.
+                Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces and offices ready for your business.
               </p>
 
               {/* CTAs */}
@@ -105,13 +106,13 @@ export default function Home() {
                   href="/properties"
                   className="cursor-pointer inline-flex items-center justify-center bg-[#0F766E] hover:bg-[#0D9488] text-white px-8 py-4 text-sm tracking-widest uppercase transition-colors duration-200"
                 >
-                  Browse Portfolio
+                  Browse Available Spaces
                 </Link>
                 <Link
                   href="/contact"
                   className="cursor-pointer inline-flex items-center justify-center border border-white/30 hover:border-white text-white px-8 py-4 text-sm tracking-widest uppercase transition-colors duration-200"
                 >
-                  Schedule Consultation
+                  Schedule a Viewing
                 </Link>
               </div>
             </div>
@@ -167,7 +168,7 @@ export default function Home() {
           {/* Section header */}
           <div className="flex items-end justify-between mb-12">
             <h2 className="font-cinzel text-[#0F172A] text-3xl sm:text-4xl font-bold">
-              Selected Portfolio
+              Available Offices &amp; Commercial Spaces
             </h2>
             <Link
               href="/properties"
@@ -289,24 +290,24 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center">
           <div className="max-w-2xl mx-auto space-y-6">
             <h2 className="font-cinzel text-white text-3xl sm:text-4xl font-bold leading-snug">
-              Ready to Acquire Your Next Asset?
+              Ready to Secure Your Next Workspace?
             </h2>
             <p className="text-white/80 text-lg font-light max-w-lg mx-auto leading-relaxed">
-              Our advisory team is standing by to match you with the right
-              commercial opportunity across Nairobi&apos;s premium corridors.
+              Our leasing advisors are standing by to match you with the ideal
+              office or retail space across Nairobi&apos;s prime commercial nodes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
               <Link
                 href="/properties"
                 className="cursor-pointer inline-flex items-center justify-center bg-white text-[#0F172A] hover:bg-[#F8FAFC] px-8 py-4 text-sm tracking-widest uppercase transition-colors duration-200"
               >
-                Browse Properties
+                Explore Available Spaces
               </Link>
               <Link
                 href="/contact"
                 className="cursor-pointer inline-flex items-center justify-center border border-white text-white hover:bg-white/10 px-8 py-4 text-sm tracking-widest uppercase transition-colors duration-200"
               >
-                Talk to an Advisor
+                Talk to a Leasing Advisor
               </Link>
             </div>
           </div>

@@ -24,13 +24,13 @@ export async function POST(req: Request) {
       area,
       description,
       amenities,
-      imageUrls, // Array of uploaded ImageKit URLs
+      imageUrls, // Array of uploaded Cloudflare R2 URLs
     } = body;
 
-    // Validate required fields
-    if (!title || !location || !price || !type || !status || !bedrooms || !bathrooms) {
+    // Validate required fields for commercial assets
+    if (!title || !location || price === undefined || price === null || !type || !status) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields (title, location, price, type, status)" },
         { status: 400 }
       );
     }
@@ -50,14 +50,14 @@ export async function POST(req: Request) {
           data: {
             title,
             location,
-            price,
+            price: Number(price),
             type,
             status,
-            bedrooms,
-            bathrooms,
-            area,
-            description,
-            amenities,
+            bedrooms: typeof bedrooms === "number" ? bedrooms : 1,
+            bathrooms: typeof bathrooms === "number" ? bathrooms : 1,
+            area: area ? Number(area) : null,
+            description: description || "",
+            amenities: amenities || [],
           },
         });
 
@@ -84,6 +84,8 @@ export async function POST(req: Request) {
 
     // Revalidate the properties pages so new data shows immediately
     revalidatePath('/properties');
+    revalidatePath('/');
+    revalidatePath('/admin-view');
     revalidatePath('/admin');
 
     return NextResponse.json({
@@ -124,30 +126,30 @@ export async function PUT(req: Request) {
     const result = await prisma.$transaction(async (tx) => {
       // 1. Update basic details
       const property = await tx.property.update({
-        where: { id },
+        where: { id: String(id) },
         data: {
           title,
           location,
-          price,
+          price: Number(price),
           type,
           status,
-          bedrooms,
-          bathrooms,
-          area,
-          description,
-          amenities,
+          bedrooms: typeof bedrooms === "number" ? bedrooms : 1,
+          bathrooms: typeof bathrooms === "number" ? bathrooms : 1,
+          area: area ? Number(area) : null,
+          description: description || "",
+          amenities: amenities || [],
         },
       });
 
       // 2. Sync Images: Delete old ones and re-add the current list
       // This is a simple strategy to handle added/removed images
-      await tx.image.deleteMany({ where: { propertyId: id } });
+      await tx.image.deleteMany({ where: { propertyId: String(id) } });
       
       if (imageUrls && imageUrls.length > 0) {
         await tx.image.createMany({
           data: imageUrls.map((url: string) => ({
             url,
-            propertyId: id,
+            propertyId: String(id),
           })),
         });
       }
@@ -156,6 +158,8 @@ export async function PUT(req: Request) {
     });
 
     revalidatePath("/properties");
+    revalidatePath("/");
+    revalidatePath("/admin-view");
     revalidatePath("/admin");
 
     return NextResponse.json({ success: true, property: result });
@@ -165,8 +169,22 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (id) {
+      const property = await prisma.property.findUnique({
+        where: { id: String(id) },
+        include: { images: true },
+      });
+      if (property) {
+        return NextResponse.json({ property });
+      }
+      return NextResponse.json({ error: "Property not found" }, { status: 404 });
+    }
+
     const properties = await prisma.property.findMany({
       orderBy: { createdAt: "desc" },
       include: { images: true },
@@ -197,11 +215,13 @@ export async function DELETE(req: Request) {
 
     // Delete property and related images (cascade delete if configured in schema)
     await prisma.property.delete({
-      where: { id: Number(propertyId) },
+      where: { id: String(propertyId) },
     });
 
     // Revalidate after deleting
     revalidatePath('/properties');
+    revalidatePath('/');
+    revalidatePath('/admin-view');
     revalidatePath('/admin');
 
     return NextResponse.json({

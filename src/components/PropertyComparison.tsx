@@ -91,7 +91,7 @@ const PropertyComparison = ({ isOpen, onClose }: PropertyComparisonProps) => {
                 />
                 <Badge
                   className={`absolute top-4 left-4 ${
-                    property.status === "For Sale"
+                    property.status === "For Rent"
                       ? "bg-success text-success-foreground"
                       : "bg-[#0A0A0A] text-primary"
                   }`}

@@ -15,7 +15,7 @@ export default function CtaSection() {
           Find Your Dream Property Today
         </h2>
         <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 animate-slide-up">
-          Whether you’re looking to buy, rent, or invest — we’re here to guide
+          Whether you’re looking to buy, rent, or invest, we’re here to guide
           you every step of the way with trusted expertise and a luxury
           experience.
         </p>

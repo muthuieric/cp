@@ -18,36 +18,36 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PM Consult – Luxury Real Estate in Kenya",
-    template: "%s | PM Consult",
+    default: "PM Commercial – Commercial Spaces & Offices for Rent in Nairobi",
+    template: "%s | PM Commercial",
   },
   description:
-    "Discover luxury homes, apartments, and commercial properties with PM Consult. Premium real estate in Nairobi and across Kenya.",
+    "Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces, retail spaces, and offices ready for your business.",
   keywords: [
-    "Luxury Real Estate Kenya",
-    "Houses for Sale Nairobi",
-    "Apartments Nairobi",
-    "PM Consult Properties",
-    "Real Estate Kenya",
-    "Luxury Apartments Nairobi",
+    "Commercial Real Estate Nairobi",
+    "Offices for Rent Nairobi",
+    "Commercial Space Nairobi",
+    "Workspaces Kenya",
+    "Office Leasing Nairobi",
+    "Retail Space Nairobi",
   ],
-  authors: [{ name: "PM Consult", url: "https://pm-consult.com" }],
-  creator: "PM Consult",
-  publisher: "PM Consult",
+  authors: [{ name: "PM Commercial", url: "https://pm-consult.com" }],
+  creator: "PM Commercial",
+  publisher: "PM Commercial",
 
   openGraph: {
     type: "website",
     url: "https://pm-consult.com",
-    title: "PM Consult – Luxury Real Estate in Kenya",
+    title: "PM Commercial – Commercial Spaces & Offices for Rent in Nairobi",
     description:
-      "Find your dream home with PM Consult. Luxury houses, apartments, and commercial properties in Kenya.",
-    siteName: "PM Consult",
+      "Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces, retail spaces, and offices ready for your business.",
+    siteName: "PM Commercial",
     images: [
       {
         url: "/og-pm-logo.png",
         width: 1200,
         height: 630,
-        alt: "PM Consult Luxury Real Estate Kenya",
+        alt: "PM Commercial Offices for Rent Nairobi",
       },
     ],
     locale: "en_US",

@@ -7,9 +7,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const numId = Number(id);
 
-  if (isNaN(numId)) {
+  if (!id) {
     return NextResponse.json({ error: "Invalid property ID" }, { status: 400 });
   }
 
@@ -21,7 +20,7 @@ export async function DELETE(
   }
 
   try {
-    await prisma.property.delete({ where: { id: numId } });
+    await prisma.property.delete({ where: { id: String(id) } });
     revalidatePath("/properties");
     revalidatePath("/admin-view");
     return NextResponse.json({ success: true, message: "Property deleted successfully" });

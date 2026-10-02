@@ -37,7 +37,7 @@ export async function getPropertiesSafe(): Promise<PropertyData[]> {
       area: p.area ? Number(p.area) : 0,
       description: p.description || "",
       amenities: Array.isArray(p.amenities) ? (p.amenities as string[]) : [],
-      status: (p.status === "For Rent" ? "For Rent" : "For Sale") as "For Sale" | "For Rent",
+      status: (p.status === "For Rent" ? "For Rent" : "For Rent") as "For Rent" | "For Rent",
       images: p.images?.length > 0 ? p.images.map((img) => img.url) : ["/images/hero-villa.jpg"],
     }));
   } catch (err) {
@@ -47,15 +47,16 @@ export async function getPropertiesSafe(): Promise<PropertyData[]> {
 }
 
 export async function getPropertyByIdSafe(id: number | string): Promise<PropertyData | null> {
-  const numId = Number(id);
+  const idStr = String(id);
+  const numId = Number(id) || 1;
 
   if (!isDatabaseConfigured) {
     return getSamplePropertyById(numId);
   }
 
   try {
-    const property = await prisma.property.findUnique({
-      where: { id: numId },
+    const property: any = await prisma.property.findUnique({
+      where: { id: idStr },
       include: { images: true },
     });
 
@@ -69,8 +70,8 @@ export async function getPropertyByIdSafe(id: number | string): Promise<Property
       area: property.area ? Number(property.area) : 0,
       description: property.description || "",
       amenities: Array.isArray(property.amenities) ? (property.amenities as string[]) : [],
-      status: (property.status === "For Rent" ? "For Rent" : "For Sale") as "For Sale" | "For Rent",
-      images: property.images?.length > 0 ? property.images.map((img) => img.url) : ["/images/hero-villa.jpg"],
+      status: (property.status === "For Rent" ? "For Rent" : "For Rent") as "For Rent" | "For Rent",
+      images: property.images?.length > 0 ? property.images.map((img: any) => img.url) : ["/images/hero-villa.jpg"],
     };
   } catch (err) {
     console.warn("Prisma query failed, falling back to sample property:", err);

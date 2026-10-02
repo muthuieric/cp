@@ -48,7 +48,7 @@ export default function Testimonials() {
             What Our Clients Say
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Don’t just take our word for it — here’s what our satisfied clients
+            Don’t just take our word for it, here’s what our satisfied clients
             have to say.
           </p>
         </div>

@@ -15,7 +15,6 @@ export default function AdminPage() {
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Building2 className="w-4 h-4 text-[#14B8A6]" />
                 <span className="text-[#14B8A6] text-[10px] tracking-[0.35em] uppercase font-semibold">
                   Institutional Management
                 </span>
@@ -24,7 +23,7 @@ export default function AdminPage() {
                 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight"
                 style={{ fontFamily: "Cinzel, Georgia, serif" }}
               >
-                Commercial Asset Intake Portal
+                Add New Commercial Property
               </h1>
               <p className="text-white/60 text-xs sm:text-sm mt-2 font-light max-w-2xl">
                 Register Grade A commercial real estate assets into the PM Commercial portfolio. Enter floor plates, pricing structures, and upload high-resolution media.
@@ -38,7 +37,7 @@ export default function AdminPage() {
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold uppercase tracking-wider rounded-none transition-colors border border-white/10"
               >
                 <LayoutDashboard className="w-3.5 h-3.5 text-[#14B8A6]" />
-                <span>Inventory Roster</span>
+                <span>Manage Properties</span>
               </Link>
               <Link
                 href="/admin/settings"

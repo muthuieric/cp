@@ -37,7 +37,7 @@ export default function Footer() {
           </Link>
 
           <p className="text-white/50 text-sm font-light leading-relaxed max-w-sm">
-            Premium commercial real estate advisory across Nairobi's most coveted institutional corridors. We acquire, develop, and steward Grade A assets.
+            Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces and offices ready for your business.
           </p>
 
           {/* Social Icons */}

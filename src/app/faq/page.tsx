@@ -15,50 +15,55 @@ interface FAQCategory {
 
 const faqData: FAQCategory[] = [
   {
-    title: "Investment & Acquisition",
+    title: "Office & Commercial Leasing",
     items: [
       {
         question:
-          "What types of commercial properties does PM specialise in?",
+          "What types of commercial spaces does PM Commercial offer for lease?",
         answer:
-          "PM Commercial focuses on Grade-A office towers, mixed-use retail developments, industrial warehousing, and strategic land parcels across Kenya's key urban corridors. Our advisory mandate spans both income-generating assets and development-ready land suitable for institutional and high-net-worth investors. Each mandate is assessed for its yield potential, capital appreciation outlook, and alignment with our clients' portfolio strategy.",
+          "PM Commercial focuses on Grade-A office suites, modular workspaces, commercial floors, and prime retail spaces across Nairobi's top commercial corridors, including Westlands, Kilimani, Upper Hill, and Karen. Every space is curated for quality infrastructure, reliable backup power, high-speed fiber connectivity, and dedicated parking.",
       },
       {
-        question: "What is the minimum investment threshold?",
+        question: "What are the standard commercial lease terms and duration?",
         answer:
-          "Our mandates typically commence from KES 50 million, though this varies depending on asset class and market conditions. We work with a range of investors — from family offices making their first commercial acquisition to institutional funds repositioning large-scale portfolios. Initial advisory consultations are obligation-free and help us tailor our recommendations to your specific capital deployment goals.",
+          "Commercial lease terms in Nairobi typically range from 2 to 6 years, with flexible options and break clauses available for expanding enterprises. Standard agreements outline transparent monthly rent, service charge allocations, escalation rates (typically 5–7.5% biennial), and rent-free fit-out periods.",
+      },
+      {
+        question: "What does the commercial service charge cover?",
+        answer:
+          "The service charge covers essential building infrastructure and services: 24/7 security and access control, CCTV monitoring, backup generator maintenance and fuel, borehole water supply, common area cleaning, lift servicing, fire safety systems, and garbage collection.",
       },
     ],
   },
   {
-    title: "Property Management",
+    title: "Property & Facilities Management",
     items: [
       {
         question:
-          "Do you provide property management services after acquisition?",
+          "Do you provide on-site property and facilities management?",
         answer:
-          "Yes. PM Commercial offers full-spectrum asset and property management services covering facilities maintenance, lease administration, service-charge reconciliation, and periodic performance reporting. Our management mandate is structured to protect and grow your asset value from day one of ownership. Clients receive a dedicated relationship manager and quarterly investment performance reviews.",
+          "Yes. PM Commercial oversees comprehensive building operations, including preventative equipment maintenance, utility monitoring, security personnel supervision, and daily facility management to ensure smooth day-to-day operations for all tenants.",
       },
       {
-        question: "How are tenant relationships managed?",
+        question: "How is maintenance and tenant support handled during our lease?",
         answer:
-          "We maintain proactive, structured engagement with all tenants through our in-house tenant liaison team. Regular occupancy health-checks, lease renewal negotiations, and dispute resolution protocols are embedded in every management agreement. Our goal is to sustain occupancy rates above 90% while minimising rent arrears and vacancy periods for our clients.",
+          "Tenants have direct access to our commercial facilities desk for any maintenance requests, technical inquiries, or emergency support. We maintain rapid response protocols for critical power, water, and HVAC services to guarantee minimal disruption to your business.",
       },
     ],
   },
   {
-    title: "Legal & Financial",
+    title: "Viewing, Space Planning & Move-In",
     items: [
       {
         question:
-          "How does PM handle due diligence for commercial acquisitions?",
+          "How do I schedule a viewing or request a space floor plan?",
         answer:
-          "PM Commercial coordinates a comprehensive due diligence process that encompasses title verification, land-use and zoning compliance, structural surveys, environmental assessments, and financial underwriting of existing tenancies. We work alongside our clients' legal counsel or can recommend vetted commercial property advocates. All findings are consolidated into a structured due diligence report prior to exchange of contracts.",
+          "You can schedule a private physical or virtual walkthrough directly through our website, via WhatsApp (+254 768 096 084), or by contacting our leasing desk. We provide detailed floor plates, layout options, and pricing breakdowns prior to your visit.",
       },
       {
-        question: "What are typical transaction timelines?",
+        question: "What is the typical timeline from viewing to moving into an office?",
         answer:
-          "A standard commercial acquisition in Kenya typically completes within 60 to 120 days from execution of the Letter of Intent, subject to due diligence findings and any regulatory consents required. Complex transactions involving multiple titles or development approvals may extend to 180 days. PM Commercial manages the entire transaction timeline, providing clients with milestone updates throughout the process.",
+          "For fitted, move-in-ready suites, handover can take place within 7 to 14 days following lease signing and deposit confirmation. For shell-and-core units requiring custom fit-outs, we coordinate with the landlord to grant a dedicated rent-free fit-out period (typically 30 to 90 days) before lease commencement.",
       },
     ],
   },
@@ -125,8 +130,7 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h1>
         <p className="text-white/50 mt-4 text-base font-light max-w-xl mx-auto leading-relaxed">
-          Everything you need to know about working with PM Commercial — from
-          initial enquiry through to post-acquisition management.
+          Everything you need to know about leasing commercial offices and workspaces with PM Commercial, from initial viewing through to move-in.
         </p>
         {/* Teal underline decoration */}
         <div className="mx-auto mt-6 w-16 h-0.5 bg-[#0F766E]" />

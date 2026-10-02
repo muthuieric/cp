@@ -33,9 +33,12 @@ import {
   COMMERCIAL_ASSETS,
   transformDbProperty,
   stripHtml,
+  isGibberish,
 } from "@/lib/commercialAssets";
 
-const CATEGORIES: AssetClass[] = ["All", "Office", "Logistics", "Hospitality", "Retail"];
+const CATEGORIES = ["All", "Office", "Retail", "Commercial Space"] as const;
+
+export type ClientSortOption = "newest" | "oldest" | "rent-asc" | "rent-desc" | "size";
 
 export default function PropertiesClient({
   initialProperties,
@@ -46,8 +49,8 @@ export default function PropertiesClient({
 }) {
   const seedProperties = initialProperties || (propProperties as CommercialProperty[]) || COMMERCIAL_ASSETS;
   const [properties, setProperties] = useState<CommercialProperty[]>(seedProperties);
-  const [selectedCategory, setSelectedCategory] = useState<AssetClass>("All");
-  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<ClientSortOption>("newest");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState<PriceRange>("All");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
@@ -120,7 +123,13 @@ export default function PropertiesClient({
           p.id.toLowerCase().includes(q)
       );
     }
-    if (selectedCategory !== "All") list = list.filter((p) => p.category === selectedCategory);
+    if (selectedCategory !== "All") {
+      if (selectedCategory === "Commercial Space") {
+        list = list.filter((p) => p.category !== "Office" && p.category !== "Retail");
+      } else {
+        list = list.filter((p) => p.category === selectedCategory);
+      }
+    }
     if (statusFilter !== "All") list = list.filter((p) => p.status === statusFilter);
 
     if (priceRange === "lease") list = list.filter((p) => p.isLease);
@@ -146,10 +155,17 @@ export default function PropertiesClient({
         }
         return Number(b.id) - Number(a.id);
       });
-    } else if (sortBy === "cap-rate") {
-      list.sort((a, b) => b.capRate - a.capRate);
-    } else if (sortBy === "yield") {
-      list.sort((a, b) => parseFloat(b.yieldDisplay) - parseFloat(a.yieldDisplay));
+    } else if (sortBy === "oldest") {
+      list.sort((a, b) => {
+        if (a.createdAt && b.createdAt) {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+        return Number(a.id) - Number(b.id);
+      });
+    } else if (sortBy === "rent-asc") {
+      list.sort((a, b) => a.priceNumeric - b.priceNumeric);
+    } else if (sortBy === "rent-desc") {
+      list.sort((a, b) => b.priceNumeric - a.priceNumeric);
     } else if (sortBy === "size") {
       list.sort((a, b) => b.sizeNumeric - a.sizeNumeric);
     }
@@ -175,16 +191,16 @@ export default function PropertiesClient({
           <div className="flex flex-col items-start mb-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-sm text-xs font-semibold text-[#0F766E] mb-4">
               <span className="w-2 h-2 rounded-full bg-[#0F766E] animate-pulse" />
-              <span>Showing {filteredAndSorted.length} of {properties.length} Grade A Commercial Assets</span>
+              <span>Showing {filteredAndSorted.length} of {properties.length} Available Spaces</span>
             </div>
             <h1
               className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#0F172A] mb-3"
               style={{ fontFamily: "Cinzel, Georgia, serif" }}
             >
-              Commercial Assets & Opportunities
+              Available Offices &amp; Commercial Spaces
             </h1>
             <p className="text-slate-600 text-sm sm:text-base max-w-2xl font-light leading-relaxed">
-              Prime commercial real estate portfolios, corporate floor plates, high-yield logistics hubs, and core-plus investments across Nairobi.
+              Find and lease premium workspaces, corporate offices, retail spaces, and logistics hubs across Nairobi&apos;s top commercial corridors.
             </p>
           </div>
 
@@ -196,54 +212,53 @@ export default function PropertiesClient({
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Search assets, tenants, or corridors..."
+                  placeholder="Search spaces, locations, or building names..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-lg text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0F766E]/20 focus:border-[#0F766E]"
                 />
               </div>
 
-              {/* Asset Class */}
+              {/* Space Category */}
               <div className="relative">
                 <select
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value as AssetClass)}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full appearance-none px-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-lg text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0F766E]/20 focus:border-[#0F766E] cursor-pointer"
                 >
-                  <option value="All">All Asset Classes</option>
-                  <option value="Office">Office Towers</option>
+                  <option value="All">All Space Types</option>
+                  <option value="Office">Office Spaces</option>
                   <option value="Retail">Retail Promenades</option>
-                  <option value="Logistics">Logistics Hubs</option>
-                  <option value="Hospitality">Corporate Hospitality</option>
+                  <option value="Commercial Space">Commercial Spaces</option>
                 </select>
                 <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
 
-              {/* Pricing Structure */}
+              {/* Monthly Rent Filter */}
               <div className="relative">
                 <select
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value as PriceRange)}
                   className="w-full appearance-none px-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-lg text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0F766E]/20 focus:border-[#0F766E] cursor-pointer"
                 >
-                  <option value="All">All Valuations & Lease Rates</option>
-                  <option value="lease">Lease Opportunities (sq.ft/mo)</option>
-                  <option value="sale-under800">Acquisitions &lt; Ksh 800M</option>
-                  <option value="sale-over800">Acquisitions Ksh 800M+</option>
+                  <option value="All">All Monthly Rates</option>
+                  <option value="lease">Commercial Lease Rates</option>
+                  <option value="sale-under800">Under Ksh 300,000 / mo</option>
+                  <option value="sale-over800">Ksh 300,000+ / mo</option>
                 </select>
                 <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
 
-              {/* Commercial Status */}
+              {/* Availability Status */}
               <div className="relative">
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
                   className="w-full appearance-none px-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-lg text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0F766E]/20 focus:border-[#0F766E] cursor-pointer"
                 >
-                  <option value="All">All Commercial Statuses</option>
-                  <option value="Occupied">Occupied</option>
-                  <option value="Vacant">Vacant</option>
+                  <option value="All">All Availability</option>
+                  <option value="Vacant">Available Now</option>
+                  <option value="Occupied">Rented</option>
                 </select>
                 <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
@@ -477,25 +492,34 @@ export default function PropertiesClient({
                   sortBy === "newest" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
                 }`}
               >
-                Newest
+                Newest First
               </button>
               <span className="text-slate-300">&middot;</span>
               <button
-                onClick={() => setSortBy("cap-rate")}
+                onClick={() => setSortBy("oldest")}
                 className={`transition-colors cursor-pointer px-1.5 py-0.5 rounded ${
-                  sortBy === "cap-rate" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
+                  sortBy === "oldest" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
                 }`}
               >
-                Cap rate
+                Oldest First
               </button>
               <span className="text-slate-300">&middot;</span>
               <button
-                onClick={() => setSortBy("yield")}
+                onClick={() => setSortBy("rent-asc")}
                 className={`transition-colors cursor-pointer px-1.5 py-0.5 rounded ${
-                  sortBy === "yield" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
+                  sortBy === "rent-asc" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
                 }`}
               >
-                Projected Yield
+                Rent: Low to High
+              </button>
+              <span className="text-slate-300">&middot;</span>
+              <button
+                onClick={() => setSortBy("rent-desc")}
+                className={`transition-colors cursor-pointer px-1.5 py-0.5 rounded ${
+                  sortBy === "rent-desc" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
+                }`}
+              >
+                Rent: High to Low
               </button>
               <span className="text-slate-300">&middot;</span>
               <button
@@ -504,7 +528,7 @@ export default function PropertiesClient({
                   sortBy === "size" ? "text-[#0F766E] font-bold" : "text-slate-600 hover:text-[#0F172A]"
                 }`}
               >
-                GLA Size
+                Space Size (Sq Ft)
               </button>
             </div>
           </div>
@@ -639,7 +663,7 @@ export default function PropertiesClient({
                         } else {
                           setShortlistedIds((prev) => [...prev, property.id]);
                           toast.success(`Shortlisted "${property.name}"`, {
-                            description: "Asset saved to your acquisition watchlist."
+                            description: "Saved to your shortlisted spaces."
                           });
                         }
                       }}
@@ -658,20 +682,26 @@ export default function PropertiesClient({
                   </div>
                 </div>
 
-                {/* Dossier Card Body */}
+                {/* Space Card Body */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    {/* Status Badge + Yield/Cap Rate */}
+                    {/* Status Badge + Lease Type */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-semibold tracking-wider uppercase text-[#0F766E]">
-                        {property.status}
+                      <span
+                        className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${
+                          property.status === "Vacant"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-amber-50 text-amber-700 border border-amber-200"
+                        }`}
+                      >
+                        {property.status === "Vacant" ? "Available" : "Rented"}
                       </span>
-                      <span className="text-[#0F766E] font-bold text-xs tracking-tight">
-                        {property.capRateDisplay}
+                      <span className="text-slate-400 text-xs font-medium">
+                        {property.category} Space
                       </span>
                     </div>
 
-                    {/* Asset Title */}
+                    {/* Space Title */}
                     <h2
                       className="text-[#0F172A] font-bold text-lg leading-snug mb-2 group-hover:text-[#0F766E] transition-colors line-clamp-1"
                       style={{ fontFamily: "Cinzel, Georgia, serif" }}
@@ -679,7 +709,7 @@ export default function PropertiesClient({
                       {property.name}
                     </h2>
 
-                    {/* Corridor, GLA, and Floor Plate */}
+                    {/* Location, Total Space, and Floor Size */}
                     <div className="space-y-1.5 mb-3 text-xs text-slate-500">
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -687,36 +717,36 @@ export default function PropertiesClient({
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Maximize2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span>{property.size}</span>
+                        <span>Total Space: {property.size}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-slate-600 font-medium">
                         <Layers className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">{property.floorPlate}</span>
+                        <span className="truncate">Floor Size: {property.floorPlate}</span>
                       </div>
                     </div>
 
                     {/* Tenant Mix info snippet */}
                     <p className="text-[11px] text-slate-500 line-clamp-1 mb-4 italic font-light">
-                      Tenant Mix: {stripHtml(property.tenantMix)}
+                      Tenant Mix: {isGibberish(property.tenantMix) ? "Details available upon request." : stripHtml(property.tenantMix)}
                     </p>
                   </div>
 
-                  {/* Pricing Bottom Row (Scannable Hierarchy) */}
+                  {/* Pricing Bottom Row */}
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between mt-auto">
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium">
-                        {property.isLease ? "Commercial Lease Rate" : "Valuation (Compact)"}
+                        Monthly Rent
                       </span>
                       <span className="text-[#0F766E] font-bold text-lg tracking-tight block">
-                        {formatCompactPrice(property.priceNumeric, property.isLease)}
+                        {formatCompactPrice(property.priceNumeric, true)}
                       </span>
                       <span className="text-[11px] text-slate-500 font-medium">
-                        {property.priceDisplay}
+                        {property.serviceCharge ? "Inc. service charge & power" : "Flexible lease terms"}
                       </span>
                     </div>
 
                     <span className="text-[#0F766E] group-hover:text-[#0D9488] text-xs font-semibold uppercase tracking-wider flex items-center gap-1 transition-colors duration-200">
-                      <span>View</span>
+                      <span>View Space</span>
                       <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
                         &rarr;
                       </span>

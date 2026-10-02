@@ -30,7 +30,7 @@ export default function LoginPage() {
       });
 
       if (res?.error) {
-        setError("Invalid institutional credentials. Please check your corporate email and access token.");
+        setError("Invalid institutional credentials. Please check your corporate email and password.");
       } else if (res?.ok) {
         router.push(callbackUrl);
         router.refresh();
@@ -57,20 +57,15 @@ export default function LoginPage() {
             <span className="text-[#0F172A]/70 text-[11px] tracking-[0.3em] uppercase mt-[-3px]">
               Commercial
             </span>
-          </Link>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F766E]/10 border border-[#0F766E]/20 text-[11px] font-semibold text-[#0F766E] mb-2">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Executive Portfolio Portal</span>
-          </div>
+          </Link>  
+  
           <h2
             className="text-2xl font-bold text-[#0F172A] tracking-tight"
             style={{ fontFamily: "Cinzel, Georgia, serif" }}
           >
-            Institutional Access Gate
+            Access Gate
           </h2>
-          <p className="text-xs text-slate-500 mt-1 font-light">
-            Authorized access for commercial asset managers and investment analysts.
-          </p>
+       
         </div>
       </div>
 
@@ -86,7 +81,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider block mb-1.5">
-                Corporate Email Address
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -104,7 +99,7 @@ export default function LoginPage() {
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider">
-                  Access Token / Password
+                  Password
                 </label>
               </div>
               <div className="relative">
@@ -121,27 +116,27 @@ export default function LoginPage() {
             </div>
 
             {/* Quick-credentials helper pill */}
-            <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-[11px] text-slate-600 space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-[#0F766E]">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Authorized Admin Credentials:</span>
-              </div>
-              <p className="font-mono text-[10px] text-slate-500">
-                Email: <span className="text-[#0F172A] font-bold">admin@pmcommercial.com</span> &middot; Password: <span className="text-[#0F172A] font-bold">admin</span>
-              </p>
-            </div>
+            {/* <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-[11px] text-slate-600 space-y-1"> */}
+              {/* <div className="flex items-center gap-1.5 font-semibold text-[#0F766E]"> */}
+                {/* <CheckCircle2 className="w-3.5 h-3.5" /> */}
+                {/* <span>Authorized Admin Credentials:</span> */}
+              {/* </div> */}
+              {/* <p className="font-mono text-[10px] text-slate-500"> */}
+                {/* Email: <span className="text-[#0F172A] font-bold">admin@pmcommercial.com</span> &middot; Password: <span className="text-[#0F172A] font-bold">admin</span> */}
+              {/* </p> */}
+            {/* </div> */}
 
             <button
               type="submit"
               disabled={loading}
               className="w-full py-3.5 bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-lg transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <span>{loading ? "Authenticating Session..." : "Authorize Portal Access"}</span>
+              <span>{loading ? "Authenticating Session..." : "Authorize Access"}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-slate-100 text-center">
+          <div className="mt-2 pt-5 border-t border-slate-100 text-center">
             <Link
               href="/"
               className="text-xs text-slate-500 hover:text-[#0F766E] transition-colors font-medium inline-flex items-center gap-1"

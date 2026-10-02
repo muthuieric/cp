@@ -77,11 +77,11 @@ const SearchFilters = ({
               />
             </div>
 
-            {/* Asset Classification */}
+            {/* Space Type */}
             <div className="lg:col-span-3">
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger className="h-12 border-slate-300 focus:border-[#0B192C] focus:ring-1 focus:ring-[#0B192C] rounded-[2px] text-sm text-[#0B192C]">
-                  <SelectValue placeholder="Asset Class" />
+                  <SelectValue placeholder="Space Type" />
                 </SelectTrigger>
                 <SelectContent className="rounded-[2px] border-slate-200 bg-white">
                   {propertyTypes.map((type) => (
@@ -123,20 +123,9 @@ const SearchFilters = ({
               {/* Transaction Type / Status */}
               <div className="lg:col-span-4 space-y-2">
                 <label className="text-xs uppercase tracking-[0.18em] font-bold text-slate-700 block">
-                  Transaction Structure
+                  Lease Status
                 </label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedStatus("For Sale")}
-                    className={`h-11 px-4 text-xs uppercase font-bold tracking-wider rounded-[2px] border transition-colors ${
-                      selectedStatus === "For Sale"
-                        ? "bg-[#0B192C] text-white border-[#0B192C]"
-                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
-                    }`}
-                  >
-                    Acquisition (Sale)
-                  </button>
                   <button
                     type="button"
                     onClick={() => setSelectedStatus("For Rent")}
@@ -146,7 +135,18 @@ const SearchFilters = ({
                         : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
                     }`}
                   >
-                    Institutional Lease
+                    Available
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedStatus("Occupied")}
+                    className={`h-11 px-4 text-xs uppercase font-bold tracking-wider rounded-[2px] border transition-colors ${
+                      selectedStatus === "Occupied"
+                        ? "bg-[#0B192C] text-white border-[#0B192C]"
+                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                    }`}
+                  >
+                    Rented
                   </button>
                 </div>
               </div>
@@ -155,7 +155,7 @@ const SearchFilters = ({
               <div className="lg:col-span-8 space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="uppercase tracking-[0.18em] font-bold text-slate-700">
-                    Capital Valuation Range
+                    Monthly Rent Range
                   </span>
                   <span className="font-bold text-[#0B192C]">
                     Ksh {(priceRange[0] / 1000000).toFixed(0)}M &mdash; Ksh {(priceRange[1] / 1000000).toFixed(0)}M+

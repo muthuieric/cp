@@ -79,7 +79,7 @@ export default function ContactPage() {
               Let&apos;s Build Something Significant
             </h1>
             <p className="text-white/60 font-light text-base leading-relaxed max-w-sm">
-              Whether you&apos;re acquiring, divesting, or developing — our
+              Whether you&apos;re acquiring, divesting, or developing, our
               team is ready to guide you through every step of your commercial
               property journey.
             </p>

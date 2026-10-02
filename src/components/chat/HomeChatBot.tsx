@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { COMMERCIAL_ASSETS } from "@/app/properties/page";
 import Image from "next/image";
 import { 
   X, 
@@ -9,7 +11,8 @@ import {
   Minus,
   RotateCcw, 
   ArrowUpRight,
-  MessageSquare
+  MessageSquare,
+  Building2
 } from "lucide-react";
 import { 
   findMatchingAnswer, 
@@ -37,8 +40,51 @@ const INITIAL_MESSAGE: Message = {
 };
 
 export default function HomeChatBot() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+
+  // Contextual asset detection based on active URL
+  const activeAssetId = pathname?.startsWith("/properties/")
+    ? pathname.replace("/properties/", "").split("/")[0]
+    : null;
+  const activeAsset = activeAssetId
+    ? COMMERCIAL_ASSETS.find((p) => p.id === activeAssetId || String(p.id).toLowerCase() === activeAssetId.toLowerCase())
+    : null;
+
+  const contextualInitialMessage: Message = activeAsset
+    ? {
+        id: `welcome-asset-${activeAsset.id}`,
+        sender: "bot",
+        text: `Welcome to PM Commercial Executive Advisory. I see you are viewing ${activeAsset.name} in ${activeAsset.location}. Would you like me to connect you with the lead broker or send the confidential offering memorandum?`,
+        time: "Just now",
+        actions: [
+          { label: "Request Offering Memo", href: "/contact" },
+          { label: "Schedule Viewing", href: "/contact" },
+          { label: "All Portfolio Assets", href: "/properties" }
+        ]
+      }
+    : INITIAL_MESSAGE;
+
+  const [messages, setMessages] = useState<Message[]>([contextualInitialMessage]);
+
+  // Update initial message if user navigates to an asset dossier
+  useEffect(() => {
+    if (activeAsset && messages.length <= 1) {
+      setMessages([
+        {
+          id: `welcome-asset-${activeAsset.id}`,
+          sender: "bot",
+          text: `Welcome to PM Commercial Executive Advisory. I see you are viewing ${activeAsset.name} (${activeAsset.location}). Would you like me to connect you with the lead broker or send the offering memorandum?`,
+          time: "Just now",
+          actions: [
+            { label: "Request Offering Memo", href: "/contact" },
+            { label: "Schedule Viewing", href: "/contact" },
+            { label: "All Portfolio Assets", href: "/properties" }
+          ]
+        }
+      ]);
+    }
+  }, [activeAssetId]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
@@ -316,6 +362,19 @@ export default function HomeChatBot() {
 
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Active Asset Context Banner */}
+          {activeAsset && (
+            <div className="px-4 py-2 bg-[#1E293B] border-t border-white/10 flex items-center justify-between text-[11px] text-white/70">
+              <span className="flex items-center gap-1.5 truncate">
+                <Building2 className="w-3.5 h-3.5 text-[#14B8A6] shrink-0" />
+                <span className="truncate">Context: <strong className="text-white font-medium">{activeAsset.name}</strong></span>
+              </span>
+              <span className="text-[#14B8A6] font-mono text-[10px] shrink-0 ml-2 font-semibold">
+                {activeAsset.priceDisplay}
+              </span>
+            </div>
+          )}
 
           {/* Footer Input Area with Exact Brand Palette */}
           <div className="p-3 bg-[#0F172A] border-t border-white/10 space-y-2 rounded-none">

@@ -21,40 +21,40 @@ interface ValueItem {
 }
 
 const metrics: MetricItem[] = [
-  { value: "150+", label: "Commercial Assets" },
-  { value: "Ksh 50B+", label: "Assets Under Management" },
-  { value: "12 Years", label: "Institutional Track Record" },
-  { value: "500+", label: "Corporate Clients" },
+  { value: "150+", label: "Commercial Spaces" },
+  { value: "2.5M+ sq ft", label: "Leased Commercial Area" },
+  { value: "12 Years", label: "Market Track Record" },
+  { value: "500+", label: "Corporate Tenants" },
 ];
 
 const team: TeamMember[] = [
   {
     name: "David Mwangi",
     title: "Managing Director",
-    bio: "David leads PM Commercial with over 20 years of experience in East African commercial real estate, driving strategy across corporate acquisitions, institutional leasing, and portfolio management.",
+    bio: "David leads PM Commercial with over 20 years of experience in East African commercial real estate, driving strategy across corporate leasing, flexible workspace solutions, and tenant advisory.",
     image: "https://i.pravatar.cc/500?img=11",
     alt: "David Mwangi, Managing Director",
   },
   {
     name: "Amina Hassan",
-    title: "Head of Acquisitions",
-    bio: "Amina oversees all property acquisitions, bringing deep expertise in deal structuring, regulatory compliance, and market underwriting that delivers consistent capital appreciation.",
+    title: "Head of Commercial Leasing",
+    bio: "Amina oversees all commercial leasing operations, connecting businesses with prime office footprints and ensuring transparent, flexible lease agreements.",
     image: "https://i.pravatar.cc/500?img=68",
-    alt: "Amina Hassan, Head of Acquisitions",
+    alt: "Amina Hassan, Head of Commercial Leasing",
   },
   {
     name: "Peter Kamau",
-    title: "Chief Investment Officer",
-    bio: "Peter directs the firm's capital allocation and investment portfolio, combining institutional financial modeling with an acute understanding of Kenya's Grade A commercial landscape.",
+    title: "Head of Tenant Advisory",
+    bio: "Peter directs workspace advisory and space planning, helping corporate clients optimize their office layouts and streamline relocation processes.",
     image: "https://i.pravatar.cc/500?img=32",
-    alt: "Peter Kamau, Chief Investment Officer",
+    alt: "Peter Kamau, Head of Tenant Advisory",
   },
   {
     name: "Sarah Wanjiku",
-    title: "Director of Asset Management",
-    bio: "Sarah manages day-to-day asset operations, tenant advisory, and ESG compliance across our commercial portfolio, ensuring maximum occupancy and operational resilience.",
+    title: "Director of Facilities & Operations",
+    bio: "Sarah manages day-to-day building operations, tenant amenities, and facilities upkeep across our commercial portfolio, ensuring an optimal working environment for every business.",
     image: "https://i.pravatar.cc/500?img=44",
-    alt: "Sarah Wanjiku, Director of Asset Management",
+    alt: "Sarah Wanjiku, Director of Facilities & Operations",
   },
 ];
 
@@ -62,22 +62,22 @@ const values: ValueItem[] = [
   {
     number: "01",
     name: "Integrity",
-    description: "Every transaction, advisory mandate, and institutional engagement is anchored in complete fiduciary transparency and ethical conduct.",
+    description: "Every lease agreement, viewing, and client advisory engagement is anchored in complete transparency, honest pricing, and ethical conduct.",
   },
   {
     number: "02",
     name: "Excellence",
-    description: "We hold ourselves to the highest standards across every discipline — from rigorous due diligence to tenant fit-out — and never settle for adequate.",
+    description: "We hold ourselves to the highest standards across every discipline, from property curation to tenant fit-out coordination, and never settle for adequate.",
   },
   {
     number: "03",
     name: "Innovation",
-    description: "We deploy data-driven insights and forward-thinking structures to stay ahead of market shifts and unlock value where others see complexity.",
+    description: "We deploy modern workspace planning and flexible lease models to help businesses scale effortlessly in high-quality commercial environments.",
   },
   {
     number: "04",
     name: "Partnership",
-    description: "We succeed only when our clients succeed. Long-term institutional relationships built on trust are the bedrock of everything we do.",
+    description: "We succeed only when our tenants succeed. Long-term corporate relationships built on trust and proactive support are the bedrock of everything we do.",
   },
 ];
 
@@ -101,7 +101,7 @@ export default function AboutPage() {
             Building Kenya&apos;s Commercial Future
           </h1>
           <p className="text-white/60 text-sm sm:text-base font-light max-w-2xl leading-relaxed">
-            Institutional Grade A commercial real estate acquisitions, development advisory, and corporate leasing across Nairobi and East Africa.
+            Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces and offices ready for your business.
           </p>
         </div>
       </section>
@@ -110,7 +110,7 @@ export default function AboutPage() {
       <section className="bg-[#0F766E] py-14 px-8">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-white text-xl lg:text-2xl font-normal italic leading-relaxed" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
-            &ldquo;We don&apos;t just lease space — we engineer environments where business scales.&rdquo;
+            &ldquo;We don&apos;t just lease space, we engineer environments where business scales.&rdquo;
           </p>
         </div>
       </section>
@@ -131,13 +131,13 @@ export default function AboutPage() {
                 Pioneering Commercial Excellence Since 2012
               </h2>
               <p className="text-slate-600 text-[15px] leading-relaxed mb-4 font-light">
-                PM Commercial was founded in Nairobi in 2012 with a singular mandate: to elevate the standard of commercial real estate advisory and asset management across East Africa.
+                PM Commercial was founded in Nairobi in 2012 with a singular mission: to provide businesses with exceptional commercial spaces and transparent, professional leasing advisory across East Africa.
               </p>
               <p className="text-slate-600 text-[15px] leading-relaxed mb-4 font-light">
-                Over the past twelve years we have grown into a fully integrated commercial property authority spanning corporate acquisitions, asset management, tenant representation, and strategic investment advisory.
+                Over the past twelve years we have grown into a trusted commercial leasing authority spanning prime office suites, flexible corporate workspaces, tenant representation, and dedicated facilities management.
               </p>
               <p className="text-slate-600 text-[15px] leading-relaxed mb-10 font-light">
-                We focus exclusively on Grade A and prime commercial assets because the quality of the built environment directly correlates with long-term capital preservation and corporate productivity.
+                We focus exclusively on Grade A and prime commercial locations because the quality of your workspace directly impacts employee productivity, brand prestige, and business growth.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 sm:gap-y-8 border-t border-slate-100 pt-8 sm:pt-10">
                 {metrics.map((m) => (
@@ -203,11 +203,16 @@ export default function AboutPage() {
           </div>
           <div className="mt-20 text-center">
             <p className="text-white/60 text-sm mb-6 font-light">
-              Ready to partner with an institutional team that prioritizes capital security and performance?
+              Ready to find the ideal commercial workspace for your business?
             </p>
-            <Link href="/contact" className="inline-block bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs tracking-[0.2em] uppercase font-bold px-10 py-4 transition-all duration-200 rounded-lg shadow-md cursor-pointer">
-              Schedule Consultation
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link href="/properties" className="inline-block bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs tracking-[0.2em] uppercase font-bold px-8 py-4 transition-all duration-200 rounded-none shadow-md cursor-pointer">
+                Browse Available Spaces
+              </Link>
+              <Link href="/contact" className="inline-block border border-white/20 hover:bg-white/10 text-white text-xs tracking-[0.2em] uppercase font-bold px-8 py-4 transition-all duration-200 rounded-none cursor-pointer">
+                Schedule a Viewing
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -120,7 +120,7 @@ export default function AdminSettingsPage() {
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold uppercase tracking-wider rounded-none transition-colors border border-white/10"
               >
                 <LayoutDashboard className="w-3.5 h-3.5 text-[#14B8A6]" />
-                <span>Inventory Roster</span>
+                <span>Manage Properties</span>
               </Link>
               <AdminSignOutButton />
             </div>
@@ -141,10 +141,10 @@ export default function AdminSettingsPage() {
                     className="text-base sm:text-lg font-bold text-[#0F172A] tracking-tight"
                     style={{ fontFamily: "Cinzel, Georgia, serif" }}
                   >
-                    Rotate Administrator Access Key
+                    Update Password
                   </h2>
                   <p className="text-xs text-slate-500 font-light mt-0.5">
-                    Updates hashed credentials in Prisma database.
+                    
                   </p>
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function AdminSettingsPage() {
                 {/* Current Password */}
                 <div>
                   <label className="block text-xs uppercase tracking-widest text-[#0F172A] font-bold mb-1.5">
-                    Current Access Token / Password *
+                    Password *
                   </label>
                   <div className="relative">
                     <input
@@ -247,13 +247,13 @@ export default function AdminSettingsPage() {
             <div className="md:col-span-5 space-y-6">
               <div className="bg-white border border-slate-200/90 p-6 rounded-none shadow-sm">
                 <span className="text-[10px] uppercase tracking-widest text-[#0F766E] font-bold block mb-2">
-                  Governance Policy
+                  
                 </span>
                 <h3
                   className="text-base font-bold text-[#0F172A] mb-3"
                   style={{ fontFamily: "Cinzel, Georgia, serif" }}
                 >
-                  Credential Security Standards
+                  
                 </h3>
                 <ul className="space-y-3 text-xs text-slate-600 font-light leading-relaxed">
                   <li className="flex items-start gap-2.5">
@@ -278,7 +278,7 @@ export default function AdminSettingsPage() {
                 <p className="text-xs text-[#0F172A] font-mono font-medium">admin@pmcommercial.com</p>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                   <span>Role: Institutional Admin</span>
-                  <span>Provider: Prisma Auth</span>
+                  <span></span>
                 </div>
               </div>
             </div>

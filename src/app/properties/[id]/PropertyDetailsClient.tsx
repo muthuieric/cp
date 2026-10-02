@@ -267,7 +267,7 @@ export default function PropertyDetailPage({
                   </h2>
                 </div>
                 <span className="text-xs font-semibold text-[#0F766E] bg-[#0F766E]/10 px-3 py-1 rounded-full">
-                  Commercial Lease Structure
+                  Lease Terms
                 </span>
               </div>
 
@@ -309,7 +309,7 @@ export default function PropertyDetailPage({
                 <div className="flex items-start gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-lg">
                   <Layers className="w-5 h-5 text-[#0F766E] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-xs font-bold text-[#0F172A] block">Typical Floor Plate</span>
+                    <span className="text-xs font-bold text-[#0F172A] block">Floor Size</span>
                     <span className="text-xs text-slate-600 font-light">{property.floorPlate}</span>
                   </div>
                 </div>
@@ -317,7 +317,7 @@ export default function PropertyDetailPage({
                 <div className="flex items-start gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-lg">
                   <Users className="w-5 h-5 text-[#0F766E] shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-xs font-bold text-[#0F172A] block">Tenant Mix Profile</span>
+                    <span className="text-xs font-bold text-[#0F172A] block">Space Overview</span>
                     <span className="text-xs text-slate-600 font-light">
                       {isGibberish(property.tenantMix) ? "Details available upon request." : stripHtml(property.tenantMix)}
                     </span>
@@ -510,7 +510,7 @@ export default function PropertyDetailPage({
                   onClick={() => toast.success("Tour Request Received", { description: "An executive leasing advisor will contact you within 2 business hours." })}
                   className="w-full py-3.5 bg-white border border-[#0F172A] text-[#0F172A] hover:bg-[#0F172A] hover:text-white text-xs font-bold uppercase tracking-[0.2em] rounded-lg transition-colors cursor-pointer"
                 >
-                  Schedule Private Tour
+                  Schedule Viewing
                 </button>
               </div>
             </div>

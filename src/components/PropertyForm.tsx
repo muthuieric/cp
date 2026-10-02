@@ -36,7 +36,7 @@ const COMMERCIAL_ASSET_CLASSES = [
 
 const COMMERCIAL_STATUSES = [
   "Vacant",
-  "Occupied (Yield-generating)"
+  "Occupied"
 ];
 
 const COMMERCIAL_AMENITIES = [
@@ -96,7 +96,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       if (initialData.description) setDescription(initialData.description);
       if (initialData.type) setSelectedType(initialData.type);
       if (initialData.status) {
-        if (initialData.status === "For Sale") {
+        if (initialData.status === "For Rent") {
           setSelectedStatus("Occupied");
         } else if (initialData.status === "For Rent") {
           setSelectedStatus("Vacant");
@@ -295,7 +295,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
         <div className="mb-6 pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#0F172A]" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
-              {initialData ? "Edit Commercial Asset Dossier" : "Commercial Asset Intake Portal"}
+              {initialData ? "Edit Commercial Asset Dossier" : "Add New Commercial Property"}
             </h2>
             <p className="text-slate-500 text-xs sm:text-sm mt-1 font-light">
               Register commercial parameters, floor plate sizing, capital valuation, and technical specifications.
@@ -311,7 +311,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 1 of 5</span>
-              <Info className="w-4 h-4 text-[#0F766E]" /> Commercial Classification & Valuation
+              Commercial Classification & Valuation
             </h3>
 
             <div className="space-y-4">
@@ -342,7 +342,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                    Asset Class *
+                    
                   </label>
                   <Select value={selectedType} onValueChange={setSelectedType} required>
                     <SelectTrigger className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]">
@@ -378,7 +378,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
 
                 <div>
                   <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                    Valuation / Capital Price (Ksh) *
+                    Monthly Rent (Ksh) *
                   </label>
                   <Input
                     type="number"
@@ -408,13 +408,13 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 2 of 5</span>
-              <MapPin className="w-4 h-4 text-[#0F766E]" /> Strategic Commercial Corridor & Node
+            Strategic Commercial Corridor & Node
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  1. Region / Node *
+                  1. Region *
                 </label>
                 <Select
                   value={selectedRegion}
@@ -480,17 +480,17 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
             )}
           </div>
 
-          {/* SECTION 3: SPECIFICATIONS & RICH TEXT INVESTMENT THESIS */}
+          {/* SECTION 3: SPECIFICATIONS & SPACE OVERVIEW */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 3 of 5</span>
-              <LayoutList className="w-4 h-4 text-[#0F766E]" /> Architectural Specifications & Investment Thesis
+              Space Specifications &amp; Overview
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  Gross Lettable Area - GLA (sq ft)
+                  Total Space Available (sq ft)
                 </label>
                 <Input
                   type="number"
@@ -502,7 +502,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               </div>
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  Typical Floor Plate Sizing (sq ft)
+                  Floor Size / Space Available (sq ft)
                 </label>
                 <Input
                   type="text"
@@ -514,17 +514,17 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               </div>
             </div>
 
-            {/* Rich Text Editor for Investment Thesis */}
+            {/* Rich Text Editor for Office Space Overview */}
             <div className="space-y-2 pt-2">
               <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider block">
-                Full Investment Thesis & Dossier Narrative (Rich Text Editor) *
+                Office Space Overview &amp; Specifications (Rich Text Editor) *
               </label>
               <div className="bg-white rounded-lg border border-slate-200 overflow-hidden min-h-[220px]">
                 <ReactQuill
                   theme="snow"
                   value={description}
                   onChange={setDescription}
-                  placeholder="Draft institutional investment thesis, lease terms, anchor tenant roster, and capital upside..."
+                  placeholder="Describe space layout, office condition, fit-out specifications, and included amenities..."
                   className="h-[180px] mb-12 sm:mb-10"
                   modules={quillModules}
                 />
@@ -532,11 +532,11 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
             </div>
           </div>
 
-          {/* SECTION 4: TECHNICAL INFRASTRUCTURE & AMENITIES */}
+          {/* SECTION 4: BUILDING AMENITIES & FEATURES */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 4 of 5</span>
-              <Sparkles className="w-4 h-4 text-[#0F766E]" /> Commercial Infrastructure & Amenities
+              Building Amenities &amp; Features
             </h3>
 
             {/* Selected Pills */}
@@ -610,7 +610,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
               <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
                 <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 5 of 5</span>
-                <ImageIcon className="w-4 h-4 text-[#0F766E]" /> Multi-Image Portfolio ({images.length} / 20 Selected) *
+                Multi-Image Portfolio ({images.length} / 20 Selected) *
               </h3>
               <span className="text-[11px] text-slate-500 font-light">Supports multi-file select and URL additions</span>
             </div>
@@ -649,8 +649,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               <div className="flex flex-col items-center justify-center gap-3 w-full">
                 <UploadCloud className="w-9 h-9 text-[#0F766E]" />
                 <div className="space-y-1">
-                  <p className="text-xs sm:text-sm font-semibold text-[#0F172A]">Select multiple photography files (up to 20 images)</p>
-                  <p className="text-[11px] text-slate-400">JPG, PNG, WebP up to 10MB each</p>
+                  <p className="text-xs sm:text-sm font-semibold text-[#0F172A]">Select multiple photography files</p>
+                  <p className="text-[11px] text-slate-400">Select high-quality photography files (JPG, PNG, WebP)</p>
                 </div>
                 <label className="w-full sm:w-auto cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#0F766E] hover:bg-[#0D9488] text-white rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
                   <UploadCloud className="w-4 h-4" />
@@ -693,7 +693,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           {/* SUBMIT BUTTON */}
           <div className="pt-4 border-t border-slate-200 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-4">
             <span className="text-xs text-slate-500 font-light text-center sm:text-left">
-              Listing will be indexed into the Executive Commercial Registry.
+              Space listing will be published to the available commercial lease directory.
             </span>
             <Button
               type="submit"
@@ -701,10 +701,10 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               className="w-full sm:w-auto bg-[#0F766E] hover:bg-[#0D9488] text-white px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] rounded-lg shadow-sm transition-colors cursor-pointer"
             >
               {loading
-                ? `Processing Asset (${uploadProgress}%)...`
+                ? `Processing Space (${uploadProgress}%)...`
                 : initialData
-                ? "Update"
-                : "Register Commercial Asset"}
+                ? "Update Space"
+                : "Register Commercial Space for Lease"}
             </Button>
           </div>
         </form>
