@@ -93,12 +93,12 @@ const PropertyCard = ({ property, href, showCompare = true }: PropertyCardProps)
         {/* Status Badge */}
         <Badge
           className={`absolute top-4 left-4 ${
-            property.status === "For Rent"
-              ? "bg-success text-success-foreground"
-              : "bg-[#0F766E] text-primary"
+            property.status === "Occupied" || property.status === "Rented"
+              ? "bg-amber-600 text-white"
+              : "bg-[#0F766E] text-white"
           }`}
         >
-          {property.status}
+          {property.status === "Occupied" || property.status === "Rented" ? "Rented" : "Available"}
         </Badge>
 
         {/* Featured Badge */}

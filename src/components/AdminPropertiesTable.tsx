@@ -23,11 +23,10 @@ interface AdminPropertiesTableProps {
   properties: AdminProperty[];
 }
 
-const ASSET_CLASSES = ["All Types", "Office", "Commercial Space"];
 const STATUS_TABS = [
   { label: "All Properties", value: "All" },
-  { label: "Available", value: "Vacant" },
-  { label: "Rented", value: "Occupied" },
+  { label: "Available", value: "Available" },
+  { label: "Rented", value: "Rented" },
 ];
 
 export default function AdminPropertiesTable({ properties }: AdminPropertiesTableProps) {
@@ -40,7 +39,6 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
   // Control bar filters
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatusTab, setSelectedStatusTab] = useState("All");
-  const [selectedType, setSelectedType] = useState("All Types");
   const [sortBy, setSortBy] = useState("newest");
 
   const handleDelete = async (id: string | number) => {
@@ -72,14 +70,15 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
       const q = searchTerm.toLowerCase();
 
       const matchesSearch = !q || titleStr.includes(q) || locStr.includes(q) || idStr.includes(q);
+      const isRented = property.status === "Occupied" || property.status === "Rented";
+      const isAvailable = !isRented;
+
       const matchesStatus =
         selectedStatusTab === "All" ||
-        property.status === selectedStatusTab ||
-        (selectedStatusTab === "Occupied" && (property.status === "Occupied" || property.status === "For Rent")) ||
-        (selectedStatusTab === "Vacant" && (property.status === "Vacant" || property.status === "For Rent"));
-      const matchesType = selectedType === "All Types" || property.type === selectedType;
+        (selectedStatusTab === "Rented" && isRented) ||
+        (selectedStatusTab === "Available" && isAvailable);
 
-      return matchesSearch && matchesStatus && matchesType;
+      return matchesSearch && matchesStatus;
     })
     .sort((a, b) => {
       const priceA = Number(a.price) || 0;
@@ -94,9 +93,9 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
     <div className="space-y-6">
       {/* ─── ADMIN OPERATIONS CONTROL BAR ─────────────────────────── */}
       <div className="bg-white border border-slate-200/90 rounded-xl p-5 shadow-sm space-y-4">
-        {/* Top row: Commercial Status Tabs + Asset Class + Sort */}
+        {/* Top row: Status Tabs + Sort */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          {/* Commercial Status Tabs */}
+          {/* Status Tabs */}
           <div className="flex overflow-x-auto no-scrollbar sm:flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-none sm:rounded-lg w-full lg:w-auto">
             {STATUS_TABS.map((tab) => {
               const active = selectedStatusTab === tab.value;
@@ -117,27 +116,10 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
             })}
           </div>
 
-          {/* Right controls: Space Type + Sort */}
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Space Type Filter */}
-            <div className="relative min-w-[170px]">
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                aria-label="Filter by space type"
-                className="w-full appearance-none bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-lg text-xs uppercase font-semibold tracking-wider text-[#0F172A] focus:outline-none focus:border-[#0F766E] cursor-pointer"
-              >
-                {ASSET_CLASSES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            </div>
-
+          {/* Right controls: Sort */}
+          <div className="flex items-center gap-3">
             {/* Sort Dropdown */}
-            <div className="relative min-w-[170px]">
+            <div className="relative min-w-[190px]">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -188,7 +170,6 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
               onClick={() => {
                 setSearchTerm("");
                 setSelectedStatusTab("All");
-                setSelectedType("All Types");
               }}
               className="mt-4 px-4 py-2 bg-[#0F766E] text-white text-xs uppercase font-semibold tracking-wider rounded-lg hover:bg-[#0D9488] transition-colors cursor-pointer"
             >
@@ -201,6 +182,7 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
             {filteredProperties.map((prop) => {
               const rawImg = prop.images && prop.images.length > 0 ? prop.images[0] : null;
               const imageUrl = typeof rawImg === "string" ? rawImg : rawImg?.url || "/images/hq-commercial-tower.jpg";
+              const isPropRented = prop.status === "Occupied" || prop.status === "Rented";
 
               return (
                 <div
@@ -224,8 +206,12 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
                         <span className="bg-[#0F172A] text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded">
                           {prop.type}
                         </span>
-                        <span className="border border-slate-200 text-[#0F766E] text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded bg-slate-50">
-                          {prop.status}
+                        <span className={`border text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded ${
+                          isPropRented
+                            ? "bg-amber-50 border-amber-200 text-amber-700"
+                            : "bg-[#0F766E]/10 border-[#0F766E]/20 text-[#0F766E]"
+                        }`}>
+                          {isPropRented ? "Rented" : "Available"}
                         </span>
                         <span className="text-[10px] font-mono text-slate-400">
                           UUID: {String(prop.id).substring(0, 13)}...

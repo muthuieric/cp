@@ -226,7 +226,7 @@ export default function PropertiesClient({
                 >
                   <option value="All">All Space Types</option>
                   <option value="Office">Office Spaces</option>
-                  <option value="Retail">Retail Promenades</option>
+                  <option value="Retail">Retail Spaces</option>
                   <option value="Commercial Space">Commercial Spaces</option>
                 </select>
                 <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -587,8 +587,9 @@ export default function PropertiesClient({
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-xs text-[#0F766E] font-semibold">{property.status}</span>
-                          <span className="text-xs font-bold text-[#0F766E]">{property.capRateDisplay}</span>
+                          <span className="text-xs text-[#0F766E] font-semibold">
+                            {property.status === "Occupied" || property.status === "Rented" ? "Rented" : "Available"}
+                          </span>
                         </div>
                         <h5 className="font-bold text-base text-[#0F172A] line-clamp-1 group-hover:text-[#0F766E] transition-colors" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
                           {property.name}
@@ -603,7 +604,7 @@ export default function PropertiesClient({
                           {formatCompactPrice(property.priceNumeric, property.isLease)}
                         </span>
                         <span className="text-xs text-[#0F766E] font-semibold flex items-center gap-1">
-                          View Dossier &rarr;
+                          View Details &rarr;
                         </span>
                       </div>
                     </div>

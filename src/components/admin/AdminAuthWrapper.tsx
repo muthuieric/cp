@@ -4,6 +4,7 @@ import React, { ReactNode, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { ShieldAlert } from "lucide-react";
+import SessionTimeout from "@/components/SessionTimeout";
 
 interface AdminAuthWrapperProps {
   children: ReactNode;
@@ -29,7 +30,7 @@ export default function AdminAuthWrapper({
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center">
         <div className="w-9 h-9 border-2 border-[#0F766E] border-t-transparent rounded-full animate-spin mb-4" />
         <p className="text-xs uppercase tracking-widest text-[#0F172A] font-semibold">
-          Verifying Institutional Authorization...
+          Verifying Authorization...
         </p>
       </div>
     );
@@ -43,11 +44,16 @@ export default function AdminAuthWrapper({
           Authentication Required
         </h2>
         <p className="text-xs text-slate-500 mb-4">
-          Redirecting to executive authentication portal...
+          Redirecting to login portal...
         </p>
       </div>
     );
   }
 
-  return <div className="admin-portal-auth-boundary">{children}</div>;
+  return (
+    <div className="admin-portal-auth-boundary">
+      <SessionTimeout />
+      {children}
+    </div>
+  );
 }

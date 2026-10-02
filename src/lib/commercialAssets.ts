@@ -161,9 +161,9 @@ export function transformDbProperty(p: any): CommercialProperty {
     amenitiesList = ["24/7 Security", "Backup Generator", "Fiber Optic"];
   }
 
-  const isVacant = typeof p.status === "string" && p.status.toLowerCase().includes("vacant");
-  const statusNorm: CommercialStatus = isVacant ? "Vacant" : "Occupied";
-  const occupancyNorm = isVacant ? "Vacant" : "Fully Occupied";
+  const isOccupied = typeof p.status === "string" && (p.status.toLowerCase().includes("occupied") || p.status.toLowerCase().includes("rented"));
+  const statusNorm: CommercialStatus = isOccupied ? "Occupied" : "Vacant";
+  const occupancyNorm = isOccupied ? "Fully Occupied" : "Vacant";
   const yearBuilt = p.createdAt ? new Date(p.createdAt).getFullYear() : 2024;
 
   const rawTitle = p.title || "";
