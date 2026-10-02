@@ -254,19 +254,6 @@ export default function PropertiesClient({
           {activeFilterCount > 0 && (
             <div className="flex flex-wrap items-center gap-2 mb-4 pt-1">
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1">Active:</span>
-              {selectedCategory !== "All" && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#0F766E]/10 text-[#0F766E] border border-[#0F766E]/20">
-                  Class: {selectedCategory}
-                  <button
-                    type="button"
-                    aria-label="Remove class filter"
-                    onClick={() => setSelectedCategory("All")}
-                    className="hover:text-rose-600 transition-colors cursor-pointer"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
               {searchTerm && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#0F766E]/10 text-[#0F766E] border border-[#0F766E]/20">
                   &ldquo;{searchTerm}&rdquo;
@@ -543,7 +530,7 @@ export default function PropertiesClient({
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="text-xs text-[#0F766E] font-semibold">
-                            {property.status === "Occupied" || property.status === "Rented" ? "Rented" : "Available"}
+                            {property.status === "Occupied" ? "Rented" : "Available"}
                           </span>
                         </div>
                         <h5 className="font-bold text-base text-[#0F172A] line-clamp-1 group-hover:text-[#0F766E] transition-colors" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
