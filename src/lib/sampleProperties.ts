@@ -4,7 +4,7 @@ export interface PropertyData {
   location: string;
   price: number;
   type: string;
-  status: "Available" | "Rented" | "Vacant" | "Occupied" | string;
+  status: "For Rent" | "For Rent" | string;
   bedrooms: number;
   bathrooms: number;
   area: number;
@@ -22,7 +22,7 @@ export const sampleProperties: PropertyData[] = [
     location: "Westlands, Nairobi",
     price: 1450000000,
     type: "Commercial Office",
-    status: "Rented",
+    status: "Occupied",
     bedrooms: 0,
     bathrooms: 16,
     area: 120000,
@@ -42,7 +42,7 @@ export const sampleProperties: PropertyData[] = [
     location: "Mombasa Road Corridor",
     price: 880000000,
     type: "Industrial Logistics",
-    status: "Rented",
+    status: "Occupied",
     bedrooms: 0,
     bathrooms: 8,
     area: 250000,
@@ -61,7 +61,7 @@ export const sampleProperties: PropertyData[] = [
     location: "Kilimani Commercial Node",
     price: 2100000000,
     type: "Retail Center",
-    status: "Rented",
+    status: "Occupied",
     bedrooms: 0,
     bathrooms: 24,
     area: 95000,
@@ -80,7 +80,7 @@ export const sampleProperties: PropertyData[] = [
     location: "Upper Hill Financial District",
     price: 3200000000,
     type: "Commercial Office",
-    status: "Available",
+    status: "Vacant",
     bedrooms: 0,
     bathrooms: 32,
     area: 180000,
@@ -99,7 +99,7 @@ export const sampleProperties: PropertyData[] = [
     location: "Embakasi Inland Container Depot",
     price: 650000000,
     type: "Industrial Logistics",
-    status: "Available",
+    status: "Vacant",
     bedrooms: 0,
     bathrooms: 6,
     area: 140000,
@@ -117,7 +117,7 @@ export const sampleProperties: PropertyData[] = [
     location: "Westlands Prime Node",
     price: 1750000000,
     type: "Hospitality",
-    status: "Rented",
+    status: "Occupied",
     bedrooms: 64,
     bathrooms: 70,
     area: 88000,

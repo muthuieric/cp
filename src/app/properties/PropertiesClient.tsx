@@ -36,8 +36,6 @@ import {
   isGibberish,
 } from "@/lib/commercialAssets";
 
-const CATEGORIES = ["All", "Office", "Retail", "Commercial Space"] as const;
-
 export type ClientSortOption = "newest" | "oldest" | "rent-asc" | "rent-desc" | "size";
 
 export default function PropertiesClient({
@@ -49,7 +47,6 @@ export default function PropertiesClient({
 }) {
   const seedProperties = initialProperties || (propProperties as CommercialProperty[]) || COMMERCIAL_ASSETS;
   const [properties, setProperties] = useState<CommercialProperty[]>(seedProperties);
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [sortBy, setSortBy] = useState<ClientSortOption>("newest");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceRange, setPriceRange] = useState<PriceRange>("All");
@@ -121,13 +118,6 @@ export default function PropertiesClient({
           p.id.toLowerCase().includes(q)
       );
     }
-    if (selectedCategory !== "All") {
-      if (selectedCategory === "Commercial Space") {
-        list = list.filter((p) => p.category !== "Office" && p.category !== "Retail");
-      } else {
-        list = list.filter((p) => p.category === selectedCategory);
-      }
-    }
     if (statusFilter !== "All") list = list.filter((p) => p.status === statusFilter);
 
     if (priceRange === "lease") list = list.filter((p) => p.isLease);
@@ -169,10 +159,9 @@ export default function PropertiesClient({
     }
 
     return list;
-  }, [properties, selectedCategory, sortBy, searchTerm, priceRange, statusFilter, areaRange, minSuites, selectedAmenities]);
+  }, [properties, sortBy, searchTerm, priceRange, statusFilter, areaRange, minSuites, selectedAmenities]);
 
   const clearAll = () => {
-    setSelectedCategory("All");
     setSearchTerm("");
     setPriceRange("All");
     setStatusFilter("All");
@@ -206,7 +195,7 @@ export default function PropertiesClient({
           <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-xl p-4 sm:p-5 shadow-sm mb-4 transition-all">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               {/* Search */}
-              <div className="relative sm:col-span-2 lg:col-span-1">
+              <div className="relative sm:col-span-2 lg:col-span-2">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
@@ -215,21 +204,6 @@ export default function PropertiesClient({
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-lg text-sm text-[#0F172A] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0F766E]/20 focus:border-[#0F766E]"
                 />
-              </div>
-
-              {/* Space Category */}
-              <div className="relative">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full appearance-none px-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-lg text-sm text-[#0F172A] focus:outline-none focus:ring-2 focus:ring-[#0F766E]/20 focus:border-[#0F766E] cursor-pointer"
-                >
-                  <option value="All">All Space Types</option>
-                  <option value="Office">Office Spaces</option>
-                  <option value="Retail">Retail Spaces</option>
-                  <option value="Commercial Space">Commercial Spaces</option>
-                </select>
-                <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
 
               {/* Monthly Rent Filter */}
@@ -461,28 +435,9 @@ export default function PropertiesClient({
             </div>
           )}
 
-          {/* ASSET CLASS PILLS + SORTING */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pt-2">
-            <div className="flex flex-wrap items-center gap-2.5">
-              {CATEGORIES.map((cat) => {
-                const active = selectedCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-5 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer ${
-                      active
-                        ? "bg-[#0F766E] text-white shadow-sm ring-2 ring-[#0F766E]/20"
-                        : "bg-white/80 backdrop-blur-md border border-slate-200/90 text-slate-700 hover:bg-white hover:text-[#0F766E] hover:border-[#0F766E]"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200/80 shadow-sm self-start md:self-auto">
+          {/* SORTING CONTROLS */}
+          <div className="flex items-center justify-end gap-5 pt-2">
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200/80 shadow-sm self-start sm:self-auto">
               <span className="text-slate-400">Sort by:</span>
               <button
                 onClick={() => setSortBy("newest")}

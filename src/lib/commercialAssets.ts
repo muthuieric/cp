@@ -162,6 +162,7 @@ export function transformDbProperty(p: any): CommercialProperty {
   }
 
   const isOccupied = typeof p.status === "string" && (p.status.toLowerCase().includes("occupied") || p.status.toLowerCase().includes("rented"));
+  const isVacant = !isOccupied;
   const statusNorm: CommercialStatus = isOccupied ? "Occupied" : "Vacant";
   const occupancyNorm = isOccupied ? "Fully Occupied" : "Vacant";
   const yearBuilt = p.createdAt ? new Date(p.createdAt).getFullYear() : 2024;
