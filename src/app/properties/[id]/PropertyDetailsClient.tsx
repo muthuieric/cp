@@ -8,7 +8,6 @@ import {
   MapPin,
   ArrowLeft,
   Check,
-  ShieldCheck,
   Building2,
   Calendar,
   Maximize2,
@@ -32,6 +31,7 @@ import {
   transformDbProperty,
   stripHtml,
   decodeHtml,
+  isGibberish,
 } from "@/lib/commercialAssets";
 
 function getStaticPropertyById(id: string): CommercialProperty | undefined {
@@ -267,77 +267,41 @@ export default function PropertyDetailPage({
                   </h2>
                 </div>
                 <span className="text-xs font-semibold text-[#0F766E] bg-[#0F766E]/10 px-3 py-1 rounded-full">
-                  {property.isLease ? "Leasehold Structure" : "Freehold Acquisition"}
+                  Commercial Lease Structure
                 </span>
               </div>
 
-              {/* Explicit Pricing Breakdown */}
+              {/* Explicit Leasing Breakdown */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {property.isLease ? (
-                  <>
-                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold mb-1">
-                        Base Rent
-                      </span>
-                      <p className="text-lg font-bold text-[#0F172A]">
-                        {property.baseRent || "Ksh 80 / sq.ft"}
-                      </p>
-                      <span className="text-[11px] text-slate-400">Exclusive of VAT</span>
-                    </div>
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold mb-1">
+                    Base Rent
+                  </span>
+                  <p className="text-lg font-bold text-[#0F172A]">
+                    {property.baseRent || (property.priceNumeric ? formatCompactPrice(Math.round(property.priceNumeric * 0.85), true) : "Ksh 80 / sq.ft")}
+                  </p>
+                  <span className="text-[11px] text-slate-400">Exclusive of service charge &amp; VAT</span>
+                </div>
 
-                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold mb-1">
-                        Service Charge
-                      </span>
-                      <p className="text-lg font-bold text-[#0F766E]">
-                        {property.serviceCharge || "Ksh 20 / sq.ft"}
-                      </p>
-                      <span className="text-[11px] text-slate-400">Inc. security, generator, common water</span>
-                    </div>
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold mb-1">
+                    Service Charge
+                  </span>
+                  <p className="text-lg font-bold text-[#0F766E]">
+                    {property.serviceCharge || "Ksh 25 / sq.ft"}
+                  </p>
+                  <span className="text-[11px] text-slate-400">Security, generator, common facilities</span>
+                </div>
 
-                    <div className="p-4 bg-[#0F172A] text-white rounded-lg">
-                      <span className="text-[10px] text-[#14B8A6] uppercase tracking-wider block font-semibold mb-1">
-                        Total Effective Rate
-                      </span>
-                      <p className="text-lg font-bold text-white">
-                        {property.priceDisplay}
-                      </p>
-                      <span className="text-[11px] text-white/60">Payable quarterly in advance</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold mb-1">
-                        Capital Valuation
-                      </span>
-                      <p className="text-lg font-bold text-[#0F172A]">
-                        {property.priceDisplay}
-                      </p>
-                      <span className="text-[11px] text-slate-400">Verified by RICS valuation</span>
-                    </div>
-
-                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                      <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold mb-1">
-                        Target Cap Rate
-                      </span>
-                      <p className="text-lg font-bold text-[#0F766E]">
-                        {property.capRateDisplay}
-                      </p>
-                      <span className="text-[11px] text-slate-400">Based on passing net operating income</span>
-                    </div>
-
-                    <div className="p-4 bg-[#0F172A] text-white rounded-lg">
-                      <span className="text-[10px] text-[#14B8A6] uppercase tracking-wider block font-semibold mb-1">
-                        Projected Net Yield
-                      </span>
-                      <p className="text-lg font-bold text-white">
-                        {property.yieldDisplay}
-                      </p>
-                      <span className="text-[11px] text-white/60">Annualized inflation indexed</span>
-                    </div>
-                  </>
-                )}
+                <div className="p-4 bg-[#0F172A] text-white rounded-lg">
+                  <span className="text-[10px] text-[#14B8A6] uppercase tracking-wider block font-semibold mb-1">
+                    Total Effective Rent
+                  </span>
+                  <p className="text-lg font-bold text-white">
+                    {formatCompactPrice(property.priceNumeric, true)}
+                  </p>
+                  <span className="text-[11px] text-white/60">Payable quarterly in advance</span>
+                </div>
               </div>
 
               {/* Floor Plate and Tenant Mix Summary Row */}
@@ -354,13 +318,15 @@ export default function PropertyDetailPage({
                   <Users className="w-5 h-5 text-[#0F766E] shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-bold text-[#0F172A] block">Tenant Mix Profile</span>
-                    <span className="text-xs text-slate-600 font-light">{stripHtml(property.tenantMix)}</span>
+                    <span className="text-xs text-slate-600 font-light">
+                      {isGibberish(property.tenantMix) ? "Details available upon request." : stripHtml(property.tenantMix)}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* ─── INVESTMENT THESIS & ASSET SPECIFICATIONS ───────── */}
+            {/* ─── INVESTMENT THESIS & SPECIFICATIONS ───────── */}
             <div className="bg-white border border-slate-200/90 rounded-xl p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
                 <div className="w-1.5 h-6 bg-[#0F766E] rounded-full" />
@@ -368,23 +334,29 @@ export default function PropertyDetailPage({
                   className="text-xl font-bold uppercase tracking-wider text-[#0F172A]"
                   style={{ fontFamily: "Cinzel, Georgia, serif" }}
                 >
-                  Institutional Investment Thesis &amp; Specifications
+                  Commercial Lease Specifications &amp; Overview
                 </h2>
               </div>
-              <div
-                className="prose max-w-none text-slate-700
-                  break-words overflow-hidden whitespace-normal
-                  [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:font-light [&_p]:text-[15px]
-                  [&_strong]:font-semibold [&_strong]:text-[#0F172A]
-                  [&_em]:italic
-                  [&_u]:underline
-                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1.5 [&_ul]:text-[15px]
-                  [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_ol]:space-y-1.5 [&_ol]:text-[15px]
-                  [&_li]:break-words [&_li]:font-light"
-                dangerouslySetInnerHTML={{
-                  __html: decodeHtml(property.descriptionHtml || property.investmentThesis || property.description) || "Institutional-grade commercial asset offering strategic location advantages, strong tenant covenant, and predictable long-term yield generation."
-                }}
-              />
+              {isGibberish(property.descriptionHtml || property.investmentThesis || property.description) ? (
+                <p className="text-slate-600 text-[15px] leading-relaxed font-light">
+                  Details available upon request.
+                </p>
+              ) : (
+                <div
+                  className="prose max-w-none text-slate-700
+                    break-words overflow-hidden whitespace-normal
+                    [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:font-light [&_p]:text-[15px]
+                    [&_strong]:font-semibold [&_strong]:text-[#0F172A]
+                    [&_em]:italic
+                    [&_u]:underline
+                    [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1.5 [&_ul]:text-[15px]
+                    [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_ol]:space-y-1.5 [&_ol]:text-[15px]
+                    [&_li]:break-words [&_li]:font-light"
+                  dangerouslySetInnerHTML={{
+                    __html: decodeHtml(property.descriptionHtml || property.investmentThesis || property.description) || "<p>Details available upon request.</p>"
+                  }}
+                />
+              )}
             </div>
 
             {/* ─── COMMERCIAL INFRASTRUCTURE & AMENITIES (Compact & Sleek) ─────────── */}
@@ -402,7 +374,7 @@ export default function PropertyDetailPage({
               <div className="flex flex-wrap gap-2 pt-1">
                 {(property.amenities || [])
                   .map((a) => stripHtml(String(a)))
-                  .filter((a) => a && a.length >= 2)
+                  .filter((a) => a && a.length >= 2 && !isGibberish(a))
                   .map((item) => (
                     <div
                       key={item}
@@ -415,39 +387,6 @@ export default function PropertyDetailPage({
                     </div>
                   ))}
               </div>
-            </div>
-
-            {/* ─── INSTITUTIONAL SAFEGUARDS ──────────────────────── */}
-            <div className="bg-[#0F172A] p-8 rounded-xl text-white space-y-4 border border-white/5 shadow-md">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-[#14B8A6]" />
-                <h3
-                  className="text-base font-bold uppercase tracking-wider text-white"
-                  style={{ fontFamily: "Cinzel, Georgia, serif" }}
-                >
-                  Due Diligence &amp; Commercial Fiduciary Governance
-                </h3>
-              </div>
-              <ul className="space-y-3 pt-2">
-                <li className="flex items-start gap-3">
-                  <span className="text-[#0F766E] mt-1">&#9670;</span>
-                  <span className="text-white/70 text-xs leading-relaxed font-light">
-                    Title Deed authenticated with Nairobi Land Registry &amp; Ministry of Lands clearance.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#0F766E] mt-1">&#9670;</span>
-                  <span className="text-white/70 text-xs leading-relaxed font-light">
-                    Complete structural, MEP, and civil engineering verification completed by accredited assessors.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#0F766E] mt-1">&#9670;</span>
-                  <span className="text-white/70 text-xs leading-relaxed font-light">
-                    Commercial tenant leases verified with enforceable legal covenants and verified rent collection track record.
-                  </span>
-                </li>
-              </ul>
             </div>
           </div>
 
@@ -495,7 +434,9 @@ export default function PropertyDetailPage({
                   className="text-white text-lg font-bold leading-snug"
                   style={{ fontFamily: "Cinzel, Georgia, serif" }}
                 >
-                  {property.name}
+                  {isGibberish(property.name)
+                    ? (property.location ? `Commercial Space - ${property.location}` : "Executive Commercial Suite")
+                    : property.name}
                 </h1>
                 <div className="flex items-center gap-1.5 mt-2 text-white/60 text-xs">
                   <MapPin className="w-3.5 h-3.5 text-[#0F766E]" />
@@ -503,46 +444,36 @@ export default function PropertyDetailPage({
                 </div>
               </div>
 
-              {/* Price Row (Hierarchy of Numbers) */}
+              {/* Price Row (Asking Rent) */}
               <div className="px-6 py-5 border-b border-slate-100 bg-white">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium mb-1">
-                  {property.isLease ? "Commercial Lease Rate" : "Asking Capital Valuation"}
+                  Asking Rent
                 </span>
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="text-[#0F766E] text-2xl font-bold tracking-tight">
-                    {formatCompactPrice(property.priceNumeric, property.isLease)}
+                    {formatCompactPrice(property.priceNumeric, true)}
                   </span>
                   <span className="text-xs text-slate-500 font-medium">
-                    {property.priceDisplay}
+                    {property.priceNumeric ? `Ksh ${property.priceNumeric.toLocaleString()}/mo` : property.priceDisplay}
                   </span>
                 </div>
               </div>
 
-              {/* 2x2 Metrics Grid */}
+              {/* Main Property Metrics (GLA & Availability) */}
               <div className="grid grid-cols-2 border-b border-slate-100 bg-white">
-                <div className="px-6 py-4 border-r border-b border-slate-100">
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium mb-1">
-                    Cap Rate
-                  </span>
-                  <span className="text-[#0F172A] text-xl font-bold">{property.capRateDisplay}</span>
-                </div>
-                <div className="px-6 py-4 border-b border-slate-100">
+                <div className="px-6 py-4 border-r border-slate-100">
                   <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium mb-1">
                     Gross Lettable Area
                   </span>
-                  <span className="text-[#0F172A] text-sm font-bold">{property.size}</span>
-                </div>
-                <div className="px-6 py-4 border-r border-slate-100">
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium mb-1">
-                    Year Commissioned
-                  </span>
-                  <span className="text-[#0F172A] text-sm font-bold">{property.yearBuilt}</span>
+                  <span className="text-[#0F172A] text-sm sm:text-base font-bold">{property.size}</span>
                 </div>
                 <div className="px-6 py-4">
                   <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium mb-1">
-                    Occupancy Level
+                    Tenancy Status
                   </span>
-                  <span className="text-[#0F172A] text-sm font-bold">{property.occupancyRate}</span>
+                  <span className="text-[#0F172A] text-sm sm:text-base font-bold">
+                    {property.occupancy || property.status || "Available for Lease"}
+                  </span>
                 </div>
               </div>
 
@@ -569,14 +500,14 @@ export default function PropertyDetailPage({
               <div className="px-6 py-6 space-y-3 bg-white">
                 <button
                   type="button"
-                  onClick={() => toast.success("Offering Memorandum Requested", { description: `Institutional dossier for ${property.name} has been dispatched to your executive email.` })}
+                  onClick={() => toast.success("Leasing Brochure Requested", { description: `Tenancy dossier for ${property.name} has been dispatched to your email.` })}
                   className="w-full py-3.5 bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-lg transition-colors cursor-pointer shadow-sm"
                 >
-                  Request Offering Memorandum
+                  Request Leasing Brochure
                 </button>
                 <button
                   type="button"
-                  onClick={() => toast.success("Tour Request Received", { description: "An executive acquisitions advisor will contact you within 2 business hours." })}
+                  onClick={() => toast.success("Tour Request Received", { description: "An executive leasing advisor will contact you within 2 business hours." })}
                   className="w-full py-3.5 bg-white border border-[#0F172A] text-[#0F172A] hover:bg-[#0F172A] hover:text-white text-xs font-bold uppercase tracking-[0.2em] rounded-lg transition-colors cursor-pointer"
                 >
                   Schedule Private Tour
@@ -591,10 +522,10 @@ export default function PropertyDetailPage({
       <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0F172A]/95 backdrop-blur-md border-t border-[#0F766E]/40 px-4 py-3 flex items-center justify-between shadow-2xl">
         <div>
           <span className="text-[10px] text-white/50 uppercase tracking-wider block font-medium">
-            {property.isLease ? "Lease Rate" : "Asking Capital"}
+            Asking Rent
           </span>
           <span className="text-[#14B8A6] text-base font-bold">
-            {formatCompactPrice(property.priceNumeric, property.isLease)}
+            {formatCompactPrice(property.priceNumeric, true)}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -608,7 +539,7 @@ export default function PropertyDetailPage({
           </button>
           <button
             type="button"
-            onClick={() => toast.success("Tour request received", { description: "An executive advisor will contact you within 2 business hours." })}
+            onClick={() => toast.success("Tour request received", { description: "An executive leasing advisor will contact you within 2 business hours." })}
             className="px-4 py-2.5 bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors shadow-sm cursor-pointer"
           >
             Schedule Tour

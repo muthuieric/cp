@@ -29,6 +29,31 @@ export function decodeHtml(input: string | null | undefined): string {
   return clean;
 }
 
+export function isGibberish(text: string | null | undefined): boolean {
+  if (!text) return true;
+  const stripped = stripHtml(text).trim().toLowerCase();
+  if (stripped.length < 3) return true;
+  if (
+    stripped.includes("mn,jmk") ||
+    stripped.includes("drftgyjh") ||
+    stripped === "nm" ||
+    stripped === "asdf" ||
+    stripped === "f" ||
+    stripped === "fg" ||
+    stripped === "fdv" ||
+    stripped === "gfhj" ||
+    stripped === "fghb" ||
+    stripped === "fdfret" ||
+    stripped === "cvxds"
+  ) {
+    return true;
+  }
+  if (/^[bcdfghjklmnpqrstvwxyz\s,.-]{4,}$/i.test(stripped)) {
+    return true;
+  }
+  return false;
+}
+
 export function formatCompactPrice(price: number, isLease: boolean): string {
   if (isLease) return `Ksh ${price.toLocaleString()}/mo`;
   if (price >= 1_000_000_000) {
@@ -514,17 +539,30 @@ export function transformDbProperty(p: any): CommercialProperty {
   const occupancyNorm = isVacant ? "Vacant" : "Fully Occupied";
   const yearBuilt = p.createdAt ? new Date(p.createdAt).getFullYear() : 2024;
 
+  const rawTitle = p.title || "";
+  const cleanTitle = isGibberish(rawTitle)
+    ? (p.location ? `Commercial Space - ${p.location}` : "Executive Commercial Suite")
+    : rawTitle;
+
   const cleanDescription = stripHtml(p.description);
-  let cleanTenantMix = "Institutional commercial tenant occupancy";
-  if (cleanDescription) {
+  let cleanTenantMix = "Details available upon request.";
+  if (cleanDescription && !isGibberish(cleanDescription)) {
     cleanTenantMix = cleanDescription.length > 120
       ? `${cleanDescription.slice(0, 117).trim()}...`
       : cleanDescription;
   }
 
+  const thesisText = (!cleanDescription || isGibberish(cleanDescription))
+    ? "Details available upon request."
+    : cleanDescription;
+
+  const htmlContent = (!p.description || isGibberish(p.description))
+    ? "<p>Details available upon request.</p>"
+    : (decodeHtml(p.description) || "<p>Details available upon request.</p>");
+
   return {
     id: String(p.id),
-    name: p.title || "Commercial Property Asset",
+    name: cleanTitle,
     category,
     location: p.location || "Nairobi, Kenya",
     size: `${areaNum.toLocaleString()} sq ft GLA`,
@@ -547,11 +585,9 @@ export function transformDbProperty(p: any): CommercialProperty {
     suites: Number(p.bedrooms) || 1,
     tenantMix: cleanTenantMix,
     amenities: amenitiesList,
-    investmentThesis:
-      cleanDescription ||
-      "Institutional-grade commercial asset offering strategic location advantages, strong tenant covenant, and predictable long-term yield generation.",
-    description: cleanDescription,
-    descriptionHtml: decodeHtml(p.description) || "",
+    investmentThesis: thesisText,
+    description: thesisText,
+    descriptionHtml: htmlContent,
     isLive: true,
     createdAt: p.createdAt ? String(p.createdAt) : new Date().toISOString(),
   };
