@@ -3,13 +3,15 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { locationGroups } from "@/public/data/properties";
 import dynamic from "next/dynamic";
-import { X, MapPin, Info, LayoutList, Image as ImageIcon, Sparkles, UploadCloud, Plus } from "lucide-react";
+import { X, MapPin, Info, LayoutList, Image as ImageIcon, Sparkles, UploadCloud, Plus, Loader2, Check } from "lucide-react";
+import { stripHtml } from "@/lib/commercialAssets";
 import 'react-quill-new/dist/quill.snow.css';
 
 // Rich Text Editor loaded dynamically on client
@@ -33,7 +35,7 @@ const COMMERCIAL_ASSET_CLASSES = [
 ];
 
 const COMMERCIAL_STATUSES = [
-  "Vacant (Available immediately)",
+  "Vacant",
   "Occupied (Yield-generating)"
 ];
 
@@ -65,6 +67,12 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState<{ show: boolean; message: string; total: number; current: number }>({
+    show: false, message: "", total: 0, current: 0,
+  });
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [titleVal, setTitleVal] = useState(initialData?.title || "");
+  const [priceVal, setPriceVal] = useState(initialData?.price ? String(initialData.price) : "");
 
   // Form Fields
   const [description, setDescription] = useState(initialData?.description || "");
@@ -74,7 +82,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>(initialData?.type || "Office");
   const [selectedStatus, setSelectedStatus] = useState<string>(
-    initialData?.status || "Occupied (Yield-generating)"
+    initialData?.status || "Occupied"
   );
 
   // Multi-Image Uploader State (up to 20 images)
@@ -89,9 +97,9 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       if (initialData.type) setSelectedType(initialData.type);
       if (initialData.status) {
         if (initialData.status === "For Sale") {
-          setSelectedStatus("Occupied (Yield-generating)");
+          setSelectedStatus("Occupied");
         } else if (initialData.status === "For Rent") {
-          setSelectedStatus("Vacant (Available immediately)");
+          setSelectedStatus("Vacant");
         } else {
           setSelectedStatus(initialData.status);
         }
@@ -164,8 +172,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
   };
 
   const addCustomAmenity = () => {
-    const trimmed = customAmenity.trim();
-    if (trimmed && !selectedAmenities.includes(trimmed)) {
+    const trimmed = stripHtml(customAmenity.trim());
+    if (trimmed.length >= 2 && !selectedAmenities.includes(trimmed)) {
       setSelectedAmenities([...selectedAmenities, trimmed]);
       setCustomAmenity("");
     }
@@ -179,44 +187,55 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
     return `${selectedRegion}, ${selectedLocation}`;
   };
 
-  // Submit Handler
+  // Submit Handler with sequential per-file upload + live progress
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setUploadProgress(20);
+    setUploadProgress(5);
 
     const form = e.currentTarget;
     const formData = new FormData(form);
 
     try {
-      let finalImageList = [...images];
+      let finalImageList: string[] = images.filter((url) => !url.startsWith("blob:"));
 
-      // If user uploaded new physical files, upload via /api/upload
+      // Sequential upload: one file at a time with live progress
       if (selectedFiles.length > 0) {
-        setUploadProgress(50);
-        const uploadData = new FormData();
-        selectedFiles.forEach((f) => uploadData.append("files", f));
+        const total = selectedFiles.length;
+        setUploadStatus({ show: true, message: `Preparing ${total} image${total > 1 ? "s" : ""}...`, total, current: 0 });
+        setUploadProgress(10);
 
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: uploadData,
-        });
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i];
+          const pct = Math.round(10 + ((i) / total) * 75);
+          setUploadProgress(pct);
+          setUploadStatus({
+            show: true,
+            message: `Uploading image ${i + 1} of ${total} (${file.name}) to Cloudflare R2...`,
+            total,
+            current: i + 1,
+          });
 
-        if (uploadRes.ok) {
-          const resData = await uploadRes.json();
-          if (resData.urls && resData.urls.length > 0) {
-            // Replace local blob URLs with permanent URLs
-            const nonBlobImages = images.filter((url) => !url.startsWith("blob:"));
-            finalImageList = [...nonBlobImages, ...resData.urls];
+          const uploadData = new FormData();
+          uploadData.append("file", file);
+          const uploadRes = await fetch("/api/upload", { method: "POST", body: uploadData });
+
+          if (uploadRes.ok) {
+            const resData = await uploadRes.json();
+            const uploadedUrl = resData.url || resData.urls?.[0];
+            if (uploadedUrl) finalImageList.push(uploadedUrl);
           }
         }
+
+        setUploadProgress(90);
+        setUploadStatus({ show: true, message: "Saving asset to database...", total, current: total });
       }
 
       if (finalImageList.length === 0) {
         finalImageList = ["/images/hq-commercial-tower.jpg"];
       }
 
-      setUploadProgress(80);
+      setUploadProgress(92);
 
       const propertyData = {
         id: initialData?.id,
@@ -247,7 +266,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       }
 
       setUploadProgress(100);
-      alert(initialData ? "Commercial asset updated successfully!" : "Commercial asset registered successfully!");
+      toast.success(initialData ? "Commercial asset updated successfully!" : "Commercial asset registered successfully!");
 
       if (!initialData) {
         form.reset();
@@ -261,11 +280,12 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       if (onSuccess) onSuccess();
     } catch (err: any) {
       console.warn("Submission notice:", err);
-      alert(`Asset submission processed: ${err.message || "Saved successfully"}`);
+      toast.error(`Submission error: ${err.message || "Please try again."}`);
       if (onSuccess) onSuccess();
     } finally {
       setLoading(false);
       setUploadProgress(0);
+      setUploadStatus({ show: false, message: "", total: 0, current: 0 });
     }
   };
 
@@ -290,6 +310,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           {/* SECTION 1: ASSET CLASSIFICATION & PRICING */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
+              <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 1 of 5</span>
               <Info className="w-4 h-4 text-[#0F766E]" /> Commercial Classification & Valuation
             </h3>
 
@@ -301,10 +322,21 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                 <Input
                   name="title"
                   placeholder="e.g. The Delta Pinnacle Grade A Office Tower"
-                  defaultValue={initialData?.title}
+                  value={titleVal}
+                  onChange={(e) => setTitleVal(e.target.value)}
+                  onBlur={() => setTouched((prev) => ({ ...prev, title: true }))}
                   required
-                  className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A] focus:border-[#0F766E]"
+                  className={`bg-white rounded-lg text-sm text-[#0F172A] focus:ring-2 focus:ring-[#0F766E]/40 focus:border-[#0F766E] ${
+                    touched.title && !titleVal.trim()
+                      ? "border-rose-500 ring-1 ring-rose-500/30"
+                      : "border-slate-200"
+                  }`}
                 />
+                {touched.title && !titleVal.trim() && (
+                  <p className="text-xs text-rose-600 mt-1 font-medium">
+                    Asset Title is required for commercial registry.
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -352,10 +384,21 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                     type="number"
                     name="price"
                     placeholder="e.g. 1450000000"
-                    defaultValue={initialData?.price}
+                    value={priceVal}
+                    onChange={(e) => setPriceVal(e.target.value)}
+                    onBlur={() => setTouched((prev) => ({ ...prev, price: true }))}
                     required
-                    className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A] focus:border-[#0F766E]"
+                    className={`bg-white rounded-lg text-sm text-[#0F172A] focus:ring-2 focus:ring-[#0F766E]/40 focus:border-[#0F766E] ${
+                      touched.price && !priceVal.trim()
+                        ? "border-rose-500 ring-1 ring-rose-500/30"
+                        : "border-slate-200"
+                    }`}
                   />
+                  {touched.price && !priceVal.trim() && (
+                    <p className="text-xs text-rose-600 mt-1 font-medium">
+                      Commercial capital valuation is required.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -364,7 +407,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           {/* SECTION 2: PRIME CORRIDOR & LOCATION */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
-              <MapPin className="w-4 h-4 text-[#0F766E]" /> Strategic Commercial Corridor
+              <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 2 of 5</span>
+              <MapPin className="w-4 h-4 text-[#0F766E]" /> Strategic Commercial Corridor & Node
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -439,7 +483,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           {/* SECTION 3: SPECIFICATIONS & RICH TEXT INVESTMENT THESIS */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
-              <LayoutList className="w-4 h-4 text-[#0F766E]" /> Architectural Specifications & Thesis
+              <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 3 of 5</span>
+              <LayoutList className="w-4 h-4 text-[#0F766E]" /> Architectural Specifications & Investment Thesis
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -490,6 +535,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           {/* SECTION 4: TECHNICAL INFRASTRUCTURE & AMENITIES */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
+              <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 4 of 5</span>
               <Sparkles className="w-4 h-4 text-[#0F766E]" /> Commercial Infrastructure & Amenities
             </h3>
 
@@ -519,24 +565,24 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               </div>
             )}
 
-            {/* Preset Buttons - Responsive Stacked Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
+            {/* Compact Badge Pills */}
+            <div className="flex flex-wrap gap-2">
               {COMMERCIAL_AMENITIES.map((amenity) => {
                 const selected = selectedAmenities.includes(amenity);
                 return (
-                  <Button
+                  <button
                     type="button"
                     key={amenity}
-                    variant="outline"
                     onClick={() => toggleAmenity(amenity)}
-                    className={`p-3 text-xs w-full text-left justify-start rounded-lg transition-all cursor-pointer whitespace-normal break-words h-auto min-h-[44px] ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-all cursor-pointer ${
                       selected
-                        ? "bg-[#0F766E] text-white border-[#0F766E] hover:bg-[#0D9488] hover:text-white"
-                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300"
+                        ? "bg-[#0F766E] text-white border-[#0F766E]"
+                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
                     }`}
                   >
-                    <span className="leading-snug">{amenity}</span>
-                  </Button>
+                    {selected && <Check className="w-3 h-3 shrink-0 stroke-[3]" />}
+                    <span>{amenity}</span>
+                  </button>
                 );
               })}
             </div>
@@ -563,6 +609,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           <div className="bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-200/80 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
               <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
+                <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 5 of 5</span>
                 <ImageIcon className="w-4 h-4 text-[#0F766E]" /> Multi-Image Portfolio ({images.length} / 20 Selected) *
               </h3>
               <span className="text-[11px] text-slate-500 font-light">Supports multi-file select and URL additions</span>
@@ -656,11 +703,43 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               {loading
                 ? `Processing Asset (${uploadProgress}%)...`
                 : initialData
-                ? "Update Commercial Dossier"
+                ? "Update"
                 : "Register Commercial Asset"}
             </Button>
           </div>
         </form>
+
+        {/* ─── UPLOAD PROGRESS MODAL OVERLAY ─── */}
+        {uploadStatus.show && (
+          <div className="fixed inset-0 z-[999] flex items-center justify-center bg-[#0F172A]/80 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-8 flex flex-col items-center gap-5">
+              <Loader2 className="w-10 h-10 animate-spin text-[#0F766E]" />
+              <div className="text-center">
+                <p className="font-bold text-[#0F172A] text-base" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
+                  Uploading to Cloudflare R2
+                </p>
+                <p className="text-slate-500 text-xs mt-1 font-light max-w-xs mx-auto">{uploadStatus.message}</p>
+              </div>
+              <div className="w-full">
+                <div className="flex justify-between text-[10px] text-slate-400 mb-1.5 font-medium">
+                  <span>Progress</span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#0F766E] to-[#14B8A6] rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                {uploadStatus.total > 0 && (
+                  <p className="text-[10px] text-slate-400 mt-2 text-center">
+                    Image {Math.min(uploadStatus.current, uploadStatus.total)} of {uploadStatus.total}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
