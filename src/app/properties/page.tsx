@@ -21,10 +21,9 @@ export default async function PropertiesPage() {
       orderBy: { createdAt: "desc" },
     });
     if (dbProps && dbProps.length > 0) {
-      const liveProps = dbProps.map(transformDbProperty);
-      const dbIds = new Set(liveProps.map((p) => p.id));
-      const staticRemaining = COMMERCIAL_ASSETS.filter((p) => !dbIds.has(p.id));
-      initialProperties = [...liveProps, ...staticRemaining];
+      initialProperties = dbProps.map(transformDbProperty);
+    } else {
+      initialProperties = [];
     }
   } catch (err) {
     console.warn("Could not pre-fetch DB properties on server:", err);
