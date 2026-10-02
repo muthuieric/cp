@@ -37,7 +37,7 @@ export async function getPropertiesSafe(): Promise<PropertyData[]> {
       area: p.area ? Number(p.area) : 0,
       description: p.description || "",
       amenities: Array.isArray(p.amenities) ? (p.amenities as string[]) : [],
-      status: (p.status === "For Rent" ? "For Rent" : "For Rent") as "For Rent" | "For Rent",
+      status: p.status || "Available",
       images: p.images?.length > 0 ? p.images.map((img) => img.url) : ["/images/hero-villa.jpg"],
     }));
   } catch (err) {
@@ -70,7 +70,7 @@ export async function getPropertyByIdSafe(id: number | string): Promise<Property
       area: property.area ? Number(property.area) : 0,
       description: property.description || "",
       amenities: Array.isArray(property.amenities) ? (property.amenities as string[]) : [],
-      status: (property.status === "For Rent" ? "For Rent" : "For Rent") as "For Rent" | "For Rent",
+      status: property.status || "Available",
       images: property.images?.length > 0 ? property.images.map((img: any) => img.url) : ["/images/hero-villa.jpg"],
     };
   } catch (err) {
