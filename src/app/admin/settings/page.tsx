@@ -255,20 +255,7 @@ export default function AdminSettingsPage() {
                 >
                   
                 </h3>
-                <ul className="space-y-3 text-xs text-slate-600 font-light leading-relaxed">
-                  <li className="flex items-start gap-2.5">
-                    <Check className="w-3.5 h-3.5 text-[#0F766E] shrink-0 mt-0.5" />
-                    <span>Passwords are salted and hashed using industrial-grade <code>bcryptjs</code> (10 rounds).</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <Check className="w-3.5 h-3.5 text-[#0F766E] shrink-0 mt-0.5" />
-                    <span>Plaintext credentials are never committed, logged, or serialized to client-side bundles.</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <Check className="w-3.5 h-3.5 text-[#0F766E] shrink-0 mt-0.5" />
-                    <span>Session invalidation occurs across active JWT tokens upon authentication renegotiation.</span>
-                  </li>
-                </ul>
+
               </div>
 
               <div className="border border-slate-200 bg-white p-6 rounded-none shadow-sm">
