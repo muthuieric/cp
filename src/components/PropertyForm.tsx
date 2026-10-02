@@ -295,23 +295,23 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
         <div className="mb-6 pb-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#0F172A]" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
-              {initialData ? "Edit Commercial Asset Dossier" : "Add New Commercial Property"}
+              {initialData ? "Edit Property Details" : "Add New Commercial Property"}
             </h2>
             <p className="text-slate-500 text-xs sm:text-sm mt-1 font-light">
-              Register commercial parameters, floor plate sizing, capital valuation, and technical specifications.
+              Enter property details, available floor space, monthly rent, and amenities.
             </p>
           </div>
           <span className="text-xs bg-[#0F766E]/10 text-[#0F766E] border border-[#0F766E]/20 px-3 py-1 rounded-full font-medium self-start sm:self-auto">
-            Grade A Standards
+            Commercial Leasing
           </span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* SECTION 1: ASSET CLASSIFICATION & PRICING */}
+          {/* SECTION 1: PROPERTY DETAILS & PRICING */}
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 1 of 5</span>
-              Commercial Classification & Valuation
+              Property Pricing &amp; Details
             </h3>
 
             <div className="space-y-4">
@@ -334,30 +334,12 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                 />
                 {touched.title && !titleVal.trim() && (
                   <p className="text-xs text-rose-600 mt-1 font-medium">
-                    Asset Title is required for commercial registry.
+                    Property Title is required.
                   </p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                    
-                  </label>
-                  <Select value={selectedType} onValueChange={setSelectedType} required>
-                    <SelectTrigger className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]">
-                      <SelectValue placeholder="Select Class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COMMERCIAL_ASSET_CLASSES.map((cls) => (
-                        <SelectItem key={cls} value={cls}>
-                          {cls}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
                     Commercial Status *
@@ -383,7 +365,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                   <Input
                     type="number"
                     name="price"
-                    placeholder="e.g. 1450000000"
+                    placeholder="e.g. 150000"
                     value={priceVal}
                     onChange={(e) => setPriceVal(e.target.value)}
                     onBlur={() => setTouched((prev) => ({ ...prev, price: true }))}
@@ -396,7 +378,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                   />
                   {touched.price && !priceVal.trim() && (
                     <p className="text-xs text-rose-600 mt-1 font-medium">
-                      Commercial capital valuation is required.
+                      Monthly rent is required.
                     </p>
                   )}
                 </div>
@@ -408,13 +390,13 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 2 of 5</span>
-            Strategic Commercial Corridor & Node
+              Location &amp; Region
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  1. Region *
+                  Region *
                 </label>
                 <Select
                   value={selectedRegion}
@@ -425,7 +407,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                   required
                 >
                   <SelectTrigger className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]">
-                    <SelectValue placeholder="Select Commercial Node" />
+                    <SelectValue placeholder="Select Region" />
                   </SelectTrigger>
                   <SelectContent>
                     {locationGroups.map((group) => (
@@ -439,7 +421,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
 
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  2. Specific District / Road *
+                  District / Road *
                 </label>
                 <Select
                   value={selectedLocation}
@@ -448,7 +430,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                   required
                 >
                   <SelectTrigger className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]">
-                    <SelectValue placeholder={selectedRegion ? "Choose Corridor" : "Select Node First"} />
+                    <SelectValue placeholder={selectedRegion ? "Choose Location" : "Select Region First"} />
                   </SelectTrigger>
                   <SelectContent>
                     {selectedRegion && (
@@ -474,7 +456,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               <div className="p-3 bg-white border border-slate-200 rounded-lg flex items-center gap-2 text-xs text-slate-600">
                 <Info className="w-3.5 h-3.5 text-[#0F766E] shrink-0" />
                 <span>
-                  Asset location tag: <strong className="text-[#0F172A]">{getFormattedLocation()}</strong>
+                  Selected location: <strong className="text-[#0F172A]">{getFormattedLocation()}</strong>
                 </span>
               </div>
             )}

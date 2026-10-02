@@ -16,7 +16,7 @@ export default function AdminPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[#14B8A6] text-[10px] tracking-[0.35em] uppercase font-semibold">
-                  Institutional Management
+                  Property Management
                 </span>
               </div>
               <h1
@@ -26,7 +26,7 @@ export default function AdminPage() {
                 Add New Commercial Property
               </h1>
               <p className="text-white/60 text-xs sm:text-sm mt-2 font-light max-w-2xl">
-                Register Grade A commercial real estate assets into the PM Commercial portfolio. Enter floor plates, pricing structures, and upload high-resolution media.
+                Add new commercial properties for rent and lease. Enter space details, monthly rent, and upload property photos.
               </p>
             </div>
 
@@ -37,14 +37,14 @@ export default function AdminPage() {
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold uppercase tracking-wider rounded-none transition-colors border border-white/10"
               >
                 <LayoutDashboard className="w-3.5 h-3.5 text-[#14B8A6]" />
-                <span>Manage Properties</span>
+                <span>Manage &amp; Edit Properties</span>
               </Link>
               <Link
                 href="/admin/settings"
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold uppercase tracking-wider rounded-none transition-colors border border-white/10"
               >
                 <KeyRound className="w-3.5 h-3.5 text-[#14B8A6]" />
-                <span>Security</span>
+                <span>Settings</span>
               </Link>
               <AdminSignOutButton />
             </div>

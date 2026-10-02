@@ -99,10 +99,10 @@ export default function AdminSettingsPage() {
                 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight"
                 style={{ fontFamily: "Cinzel, Georgia, serif" }}
               >
-                Institutional Security & Credentials
+                Security &amp; Password Settings
               </h1>
               <p className="text-white/60 text-xs sm:text-sm mt-2 font-light max-w-xl">
-                Manage cryptographic authentication credentials, rotate administrator passwords, and verify database access policies.
+                Update your administrator login password and account credentials.
               </p>
             </div>
 
@@ -243,29 +243,16 @@ export default function AdminSettingsPage() {
               </form>
             </div>
 
-            {/* Right Column: Security Policy & Audit Info */}
+            {/* Right Column: Account Information */}
             <div className="md:col-span-5 space-y-6">
-              <div className="bg-white border border-slate-200/90 p-6 rounded-none shadow-sm">
-                <span className="text-[10px] uppercase tracking-widest text-[#0F766E] font-bold block mb-2">
-                  
-                </span>
-                <h3
-                  className="text-base font-bold text-[#0F172A] mb-3"
-                  style={{ fontFamily: "Cinzel, Georgia, serif" }}
-                >
-                  
-                </h3>
-
-              </div>
-
               <div className="border border-slate-200 bg-white p-6 rounded-none shadow-sm">
                 <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block mb-1">
                   Account Identifier
                 </span>
                 <p className="text-xs text-[#0F172A] font-mono font-medium">admin@pmcommercial.com</p>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                  <span>Role: Institutional Admin</span>
-                  <span></span>
+                  <span>Role: Administrator</span>
+                  <span className="text-emerald-600 font-medium">Active</span>
                 </div>
               </div>
             </div>

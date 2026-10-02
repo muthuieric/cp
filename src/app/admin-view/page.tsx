@@ -50,7 +50,7 @@ export default async function AdminViewPage() {
                 Commercial Properties
               </h1>
               <p className="text-white/60 text-xs sm:text-sm mt-2 font-light">
-                Live oversight of institutional assets, floor plate inventory, valuations, and yield parameters.
+                Overview of commercial properties for rent, floor area, and monthly lease pricing.
               </p>
             </div>
 
@@ -61,14 +61,14 @@ export default async function AdminViewPage() {
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-semibold uppercase tracking-wider rounded-none sm:rounded-lg transition-colors shadow-sm"
               >
                 <PlusCircle className="w-3.5 h-3.5" />
-                <span>New Asset Intake</span>
+                <span>Add Property</span>
               </Link>
               <Link
                 href="/admin/settings"
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold uppercase tracking-wider rounded-none sm:rounded-lg transition-colors border border-white/10"
               >
                 <KeyRound className="w-3.5 h-3.5 text-[#14B8A6]" />
-                <span>Security</span>
+                <span>Settings</span>
               </Link>
               <AdminSignOutButton />
             </div>
@@ -84,7 +84,7 @@ export default async function AdminViewPage() {
                   <Building2 className="w-5 h-5 text-[#14B8A6]" />
                 </div>
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Total Commercial Assets
+                  Total Properties
                 </span>
               </div>
               <span
