@@ -573,6 +573,22 @@ export default function PropertiesClient({
                     className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                  
+                  {/* Category Tag & Availability Status Tag on Left */}
+                  <div className="absolute top-3 left-3 flex items-center gap-2">
+                    <span className="bg-[#0F172A]/90 backdrop-blur-sm text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded">
+                      {property.category}
+                    </span>
+                    <span
+                      className={`text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded shadow-sm ${
+                        property.status === "Vacant"
+                          ? "bg-emerald-600 text-white"
+                          : "bg-amber-600 text-white"
+                      }`}
+                    >
+                      {property.status === "Vacant" ? "Available" : "Not Available"}
+                    </span>
+                  </div>
 
                   {/* Top Right Badges: Photos & Shortlist */}
                   <div className="absolute top-3 right-3 flex items-center gap-2">
@@ -614,7 +630,7 @@ export default function PropertiesClient({
                 {/* Space Card Body */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    {/* Status Badge */}
+                    {/* Status Badge + Lease Type */}
                     <div className="flex items-center justify-between mb-2">
                       <span
                         className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded ${
@@ -623,7 +639,10 @@ export default function PropertiesClient({
                             : "bg-amber-50 text-amber-700 border border-amber-200"
                         }`}
                       >
-                        {property.status === "Vacant" ? "Available" : "Rented"}
+                        {property.status === "Vacant" ? "Available" : "Not Available"}
+                      </span>
+                      <span className="text-slate-400 text-xs font-medium">
+                        {property.category} Space
                       </span>
                     </div>
 
