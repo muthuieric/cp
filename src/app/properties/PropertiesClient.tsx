@@ -77,10 +77,8 @@ export default function PropertiesClient({
         if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
           const liveProps: CommercialProperty[] = data.properties.map(transformDbProperty);
           if (isMounted) {
-            // Live DB properties take precedence and are at the top
-            const dbIds = new Set(liveProps.map((p) => p.id));
-            const staticRemaining = COMMERCIAL_ASSETS.filter((p) => !dbIds.has(p.id));
-            setProperties([...liveProps, ...staticRemaining]);
+            // Option 1: Display ONLY real database properties when available
+            setProperties(liveProps);
           }
         }
       } catch (err) {
