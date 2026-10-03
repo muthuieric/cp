@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { locationGroups } from "@/public/data/properties";
 import dynamic from "next/dynamic";
 import { X, MapPin, Info, LayoutList, Image as ImageIcon, Sparkles, UploadCloud, Plus, Loader2, Check } from "lucide-react";
 import { stripHtml } from "@/lib/commercialAssets";
