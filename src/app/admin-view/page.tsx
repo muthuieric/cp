@@ -21,6 +21,8 @@ export default async function AdminViewPage() {
     bathrooms: p.bathrooms,
     area: p.area || 0,
     images: p.images || [],
+    description: p.description || "",
+    amenities: p.amenities || [],
   }));
 
   const totalAssets = formatted.length;

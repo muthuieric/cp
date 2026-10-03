@@ -31,27 +31,8 @@ export function decodeHtml(input: string | null | undefined): string {
 
 export function isGibberish(text: string | null | undefined): boolean {
   if (!text) return true;
-  const stripped = stripHtml(text).trim().toLowerCase();
-  if (stripped.length < 3) return true;
-  if (
-    stripped.includes("mn,jmk") ||
-    stripped.includes("drftgyjh") ||
-    stripped === "nm" ||
-    stripped === "asdf" ||
-    stripped === "f" ||
-    stripped === "fg" ||
-    stripped === "fdv" ||
-    stripped === "gfhj" ||
-    stripped === "fghb" ||
-    stripped === "fdfret" ||
-    stripped === "cvxds"
-  ) {
-    return true;
-  }
-  if (/^[bcdfghjklmnpqrstvwxyz\s,.-]{4,}$/i.test(stripped)) {
-    return true;
-  }
-  return false;
+  const stripped = stripHtml(text).trim();
+  return stripped.length === 0;
 }
 
 export function formatCompactPrice(price: number, isLease: boolean): string {
@@ -172,21 +153,15 @@ export function transformDbProperty(p: any): CommercialProperty {
     ? (p.location ? `Commercial Space - ${p.location}` : "Executive Commercial Suite")
     : rawTitle;
 
-  const cleanDescription = stripHtml(p.description);
-  let cleanTenantMix = "Details available upon request.";
-  if (cleanDescription && !isGibberish(cleanDescription)) {
-    cleanTenantMix = cleanDescription.length > 120
-      ? `${cleanDescription.slice(0, 117).trim()}...`
-      : cleanDescription;
-  }
+  const rawDesc = p.description || "";
+  const hasDesc = stripHtml(rawDesc).trim().length > 0;
+  const cleanDescription = hasDesc ? stripHtml(rawDesc).trim() : "";
+  const cleanTenantMix = cleanDescription
+    ? (cleanDescription.length > 120 ? `${cleanDescription.slice(0, 117).trim()}...` : cleanDescription)
+    : "Details available upon request.";
 
-  const thesisText = (!cleanDescription || isGibberish(cleanDescription))
-    ? "Details available upon request."
-    : cleanDescription;
-
-  const htmlContent = (!p.description || isGibberish(p.description))
-    ? "<p>Details available upon request.</p>"
-    : (decodeHtml(p.description) || "<p>Details available upon request.</p>");
+  const thesisText = cleanDescription || "Details available upon request.";
+  const htmlContent = hasDesc ? (decodeHtml(rawDesc) || "<p>Details available upon request.</p>") : "<p>Details available upon request.</p>";
 
   return {
     id: String(p.id),
@@ -195,15 +170,15 @@ export function transformDbProperty(p: any): CommercialProperty {
     location: p.location || "Nairobi, Kenya",
     size: `${areaNum.toLocaleString()} sq ft GLA`,
     sizeNumeric: areaNum,
-    floorPlate: `${Math.round(areaNum / Math.max(1, p.bedrooms || 1)).toLocaleString()} sq ft floor plate`,
+    floorPlate: `${areaNum.toLocaleString()} sq ft floor plate`,
     capRate: 8.5,
     capRateDisplay: "8.5% Cap Rate",
     yieldDisplay: "9.2% Net Yield",
     isLease,
     priceNumeric: priceNum,
     priceDisplay: formatCompactPrice(priceNum, isLease),
-    baseRent: isLease ? `Ksh ${Math.round(priceNum * 0.85).toLocaleString()}/mo` : undefined,
-    serviceCharge: isLease ? `Ksh ${Math.round(priceNum * 0.15).toLocaleString()}/mo` : undefined,
+    baseRent: "Ksh 80 / sq.ft",
+    serviceCharge: "Ksh 20 / sq.ft",
     status: statusNorm,
     occupancy: occupancyNorm,
     image: primaryImage,

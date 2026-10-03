@@ -17,6 +17,8 @@ export interface AdminProperty {
   bathrooms?: number;
   area?: number;
   images: string[] | any[];
+  description?: string;
+  amenities?: string[];
 }
 
 interface AdminPropertiesTableProps {
@@ -26,7 +28,7 @@ interface AdminPropertiesTableProps {
 const STATUS_TABS = [
   { label: "All Properties", value: "All" },
   { label: "Available", value: "Available" },
-  { label: "Rented", value: "Rented" },
+  { label: "Occupied", value: "Occupied" },
 ];
 
 export default function AdminPropertiesTable({ properties }: AdminPropertiesTableProps) {
@@ -70,12 +72,12 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
       const q = searchTerm.toLowerCase();
 
       const matchesSearch = !q || titleStr.includes(q) || locStr.includes(q) || idStr.includes(q);
-      const isRented = property.status === "Occupied" || property.status === "Rented";
-      const isAvailable = !isRented;
+      const isOccupied = typeof property.status === "string" && (property.status.toLowerCase().includes("occup") || property.status.toLowerCase().includes("rent"));
+      const isAvailable = !isOccupied;
 
       const matchesStatus =
         selectedStatusTab === "All" ||
-        (selectedStatusTab === "Rented" && isRented) ||
+        (selectedStatusTab === "Occupied" && isOccupied) ||
         (selectedStatusTab === "Available" && isAvailable);
 
       return matchesSearch && matchesStatus;
@@ -182,7 +184,7 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
             {filteredProperties.map((prop) => {
               const rawImg = prop.images && prop.images.length > 0 ? prop.images[0] : null;
               const imageUrl = typeof rawImg === "string" ? rawImg : rawImg?.url || "/images/hq-commercial-tower.jpg";
-              const isPropRented = prop.status === "Occupied" || prop.status === "Rented";
+              const isPropRented = typeof prop.status === "string" && (prop.status.toLowerCase().includes("occup") || prop.status.toLowerCase().includes("rent"));
 
               return (
                 <div
@@ -209,9 +211,9 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
                         <span className={`border text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded ${
                           isPropRented
                             ? "bg-amber-50 border-amber-200 text-amber-700"
-                            : "bg-[#0F766E]/10 border-[#0F766E]/20 text-[#0F766E]"
+                            : "bg-emerald-50 border-emerald-200 text-emerald-700"
                         }`}>
-                          {isPropRented ? "Rented" : "Available"}
+                          {isPropRented ? "Occupied" : "Available"}
                         </span>
                         <span className="text-[10px] font-mono text-slate-400">
                           UUID: {String(prop.id).substring(0, 13)}...
@@ -238,38 +240,17 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
                   {/* Right: ACTION BUTTONS (Edit + Delete) */}
                   <div className="flex items-center gap-2.5 self-stretch sm:self-end lg:self-center justify-end shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                     {/* EDIT BUTTON */}
-                    <Dialog
-                      open={isEditOpen && editingProperty?.id === prop.id}
-                      onOpenChange={(open) => {
-                        setIsEditOpen(open);
-                        if (!open) setEditingProperty(null);
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingProperty(prop);
+                        setIsEditOpen(true);
                       }}
+                      className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-1.5 px-4 py-2 border border-[#0F766E] text-[#0F766E] hover:bg-[#0F766E] hover:text-white rounded-lg text-xs uppercase font-bold tracking-wider transition-colors cursor-pointer"
                     >
-                      <DialogTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingProperty(prop);
-                            setIsEditOpen(true);
-                          }}
-                          className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-1.5 px-4 py-2 border border-[#0F766E] text-[#0F766E] hover:bg-[#0F766E] hover:text-white rounded-lg text-xs uppercase font-bold tracking-wider transition-colors cursor-pointer"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                          <span>Edit</span>
-                        </button>
-                      </DialogTrigger>
-
-                      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-white border border-slate-200 rounded-xl">
-                        <PropertyForm
-                          initialData={editingProperty}
-                          onSuccess={() => {
-                            setIsEditOpen(false);
-                            setEditingProperty(null);
-                            window.location.reload();
-                          }}
-                        />
-                      </DialogContent>
-                    </Dialog>
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>Edit</span>
+                    </button>
 
                     {/* DELETE BUTTON */}
                     <button
@@ -289,6 +270,29 @@ export default function AdminPropertiesTable({ properties }: AdminPropertiesTabl
           </div>
         )}
       </div>
+
+      {/* GLOBAL EDIT PROPERTY DIALOG */}
+      <Dialog
+        open={isEditOpen}
+        onOpenChange={(open) => {
+          setIsEditOpen(open);
+          if (!open) setEditingProperty(null);
+        }}
+      >
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-white border border-slate-200 rounded-xl">
+          {editingProperty && (
+            <PropertyForm
+              key={String(editingProperty.id)}
+              initialData={editingProperty}
+              onSuccess={() => {
+                setIsEditOpen(false);
+                setEditingProperty(null);
+                window.location.reload();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

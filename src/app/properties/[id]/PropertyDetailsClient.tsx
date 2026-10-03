@@ -278,9 +278,13 @@ export default function PropertyDetailPage({
                     Base Rent
                   </span>
                   <p className="text-lg font-bold text-[#0F172A]">
-                    {property.baseRent || (property.priceNumeric ? formatCompactPrice(Math.round(property.priceNumeric * 0.85), true) : "Ksh 80 / sq.ft")}
+                    Ksh 80 / sq.ft
                   </p>
-                  <span className="text-[11px] text-slate-400">Exclusive of service charge &amp; VAT</span>
+                  <span className="text-[11px] text-slate-400">
+                    {property.sizeNumeric
+                      ? `~Ksh ${(property.sizeNumeric * 80).toLocaleString()} /mo (excl. VAT)`
+                      : "Exclusive of service charge & VAT"}
+                  </span>
                 </div>
 
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
@@ -288,9 +292,13 @@ export default function PropertyDetailPage({
                     Service Charge
                   </span>
                   <p className="text-lg font-bold text-[#0F766E]">
-                    {property.serviceCharge || "Ksh 25 / sq.ft"}
+                    Ksh 20 / sq.ft
                   </p>
-                  <span className="text-[11px] text-slate-400">Security, generator, common facilities</span>
+                  <span className="text-[11px] text-slate-400">
+                    {property.sizeNumeric
+                      ? `~Ksh ${(property.sizeNumeric * 20).toLocaleString()} /mo (security, generator)`
+                      : "Security, generator, common facilities"}
+                  </span>
                 </div>
 
                 <div className="p-4 bg-[#0F172A] text-white rounded-lg">
@@ -298,9 +306,13 @@ export default function PropertyDetailPage({
                     Total Effective Rent
                   </span>
                   <p className="text-lg font-bold text-white">
-                    {formatCompactPrice(property.priceNumeric, true)}
+                    Ksh 100 / sq.ft
                   </p>
-                  <span className="text-[11px] text-white/60">Payable quarterly in advance</span>
+                  <span className="text-[11px] text-white/60">
+                    {property.sizeNumeric
+                      ? `Total: Ksh ${(property.sizeNumeric * 100).toLocaleString()} /mo`
+                      : "Payable quarterly in advance"}
+                  </span>
                 </div>
               </div>
 
@@ -310,7 +322,9 @@ export default function PropertyDetailPage({
                   <Layers className="w-5 h-5 text-[#0F766E] shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-bold text-[#0F172A] block">Floor Size</span>
-                    <span className="text-xs text-slate-600 font-light">{property.floorPlate}</span>
+                    <span className="text-xs text-slate-600 font-light">
+                      {property.sizeNumeric ? `${property.sizeNumeric.toLocaleString()} sq ft floor plate` : property.floorPlate}
+                    </span>
                   </div>
                 </div>
 
@@ -319,7 +333,7 @@ export default function PropertyDetailPage({
                   <div>
                     <span className="text-xs font-bold text-[#0F172A] block">Space Overview</span>
                     <span className="text-xs text-slate-600 font-light">
-                      {isGibberish(property.tenantMix) ? "Details available upon request." : stripHtml(property.tenantMix)}
+                      {stripHtml(property.description || property.descriptionHtml || "").trim() || "Details available upon request."}
                     </span>
                   </div>
                 </div>
@@ -337,11 +351,7 @@ export default function PropertyDetailPage({
                   Commercial Lease Specifications &amp; Overview
                 </h2>
               </div>
-              {isGibberish(property.descriptionHtml || property.investmentThesis || property.description) ? (
-                <p className="text-slate-600 text-[15px] leading-relaxed font-light">
-                  Details available upon request.
-                </p>
-              ) : (
+              {stripHtml(property.descriptionHtml || property.investmentThesis || property.description || "").trim() ? (
                 <div
                   className="prose max-w-none text-slate-700
                     break-words overflow-hidden whitespace-normal
@@ -353,9 +363,13 @@ export default function PropertyDetailPage({
                     [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_ol]:space-y-1.5 [&_ol]:text-[15px]
                     [&_li]:break-words [&_li]:font-light"
                   dangerouslySetInnerHTML={{
-                    __html: decodeHtml(property.descriptionHtml || property.investmentThesis || property.description) || "<p>Details available upon request.</p>"
+                    __html: decodeHtml(property.descriptionHtml || property.investmentThesis || property.description)
                   }}
                 />
+              ) : (
+                <p className="text-slate-600 text-[15px] leading-relaxed font-light">
+                  Details available upon request.
+                </p>
               )}
             </div>
 

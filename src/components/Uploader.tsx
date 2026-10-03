@@ -51,7 +51,7 @@ export default function Uploader() {
         disabled={uploading}
         className="px-4 py-2 bg-primary text-white rounded"
       >
-        {uploading ? `Uploading (${progress}%)...` : "Upload to Cloudflare R2"}
+        {uploading ? `Uploading (${progress}%)...` : "Upload"}
       </button>
       {uploadedUrl && (
         <p className="text-sm text-green-600">

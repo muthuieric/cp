@@ -35,7 +35,7 @@ const COMMERCIAL_ASSET_CLASSES = [
 ];
 
 const COMMERCIAL_STATUSES = [
-  "Vacant",
+  "Available",
   "Occupied"
 ];
 
@@ -58,6 +58,29 @@ const COMMERCIAL_AMENITIES = [
   "Smart Building Management System (BMS)"
 ];
 
+const POPULAR_LOCATIONS = [
+  "Westlands",
+  "Kilimani",
+  "Lavington",
+  "Upperhill",
+  "Riverside",
+  "Parklands",
+  "Gigiri",
+  "CBD",
+  "Mombasa Road",
+  "Karen",
+  "Kileleshwa",
+  "Spring Valley",
+  "Hurlingham",
+  "General Mathenge",
+  "Brookside",
+  "Rhapta Road",
+  "Kiambu Road",
+  "Ruaraka",
+  "South C",
+  "South B",
+];
+
 type PropertyFormProps = {
   initialData?: any;
   onSuccess?: () => void;
@@ -73,36 +96,43 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [titleVal, setTitleVal] = useState(initialData?.title || "");
   const [priceVal, setPriceVal] = useState(initialData?.price ? String(initialData.price) : "");
+  const [areaVal, setAreaVal] = useState(initialData?.area ? String(initialData.area) : "");
 
   // Form Fields
   const [description, setDescription] = useState(initialData?.description || "");
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>(
+    Array.isArray(initialData?.amenities) ? initialData.amenities : []
+  );
   const [customAmenity, setCustomAmenity] = useState("");
-  const [selectedRegion, setSelectedRegion] = useState<string>("");
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<string>(initialData?.location || "");
   const [selectedType, setSelectedType] = useState<string>(initialData?.type || "Office");
   const [selectedStatus, setSelectedStatus] = useState<string>(
-    initialData?.status || "Occupied"
+    initialData?.status
+      ? (String(initialData.status).toLowerCase().includes("occup") || String(initialData.status).toLowerCase().includes("rent") ? "Occupied" : "Available")
+      : "Available"
   );
 
   // Multi-Image Uploader State (up to 20 images)
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>(
+    initialData?.images && Array.isArray(initialData.images)
+      ? initialData.images.map((img: any) => (typeof img === "string" ? img : img.url)).filter(Boolean).slice(0, 20)
+      : []
+  );
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [directImageUrl, setDirectImageUrl] = useState("");
 
   // Sync initialData
   useEffect(() => {
     if (initialData) {
-      if (initialData.description) setDescription(initialData.description);
+      if (initialData.title !== undefined) setTitleVal(initialData.title || "");
+      if (initialData.price !== undefined) setPriceVal(initialData.price ? String(initialData.price) : "");
+      if (initialData.area !== undefined) setAreaVal(initialData.area ? String(initialData.area) : "");
+      if (initialData.description !== undefined) setDescription(initialData.description || "");
       if (initialData.type) setSelectedType(initialData.type);
+      if (initialData.location) setSelectedLocation(initialData.location);
       if (initialData.status) {
-        if (initialData.status === "For Rent") {
-          setSelectedStatus("Occupied");
-        } else if (initialData.status === "For Rent") {
-          setSelectedStatus("Vacant");
-        } else {
-          setSelectedStatus(initialData.status);
-        }
+        const st = String(initialData.status).toLowerCase();
+        setSelectedStatus(st.includes("occup") || st.includes("rent") ? "Occupied" : "Available");
       }
       if (Array.isArray(initialData.amenities)) {
         setSelectedAmenities(initialData.amenities);
@@ -110,31 +140,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       if (initialData.images && Array.isArray(initialData.images)) {
         const urlList = initialData.images.map((img: any) =>
           typeof img === "string" ? img : img.url
-        );
+        ).filter(Boolean);
         setImages(urlList.slice(0, 20));
-      }
-
-      // Reverse match location
-      if (initialData.location) {
-        const locString = initialData.location;
-        let matchedRegion = "";
-        let matchedLocation = "";
-        for (const group of locationGroups) {
-          for (const item of group.items) {
-            if (locString.includes(item)) {
-              matchedRegion = group.category;
-              matchedLocation = item;
-              break;
-            }
-          }
-          if (matchedLocation) break;
-        }
-        if (matchedLocation) {
-          setSelectedLocation(matchedLocation);
-          setSelectedRegion(matchedRegion);
-        } else {
-          setSelectedLocation(initialData.location);
-        }
       }
     }
   }, [initialData]);
@@ -180,11 +187,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
   };
 
   const getFormattedLocation = () => {
-    if (!selectedRegion || !selectedLocation) return selectedLocation || "Nairobi Prime Corridor";
-    if (selectedRegion === "Other Areas" || selectedRegion === selectedLocation) {
-      return selectedLocation;
-    }
-    return `${selectedRegion}, ${selectedLocation}`;
+    return selectedLocation.trim() || "Nairobi Prime Corridor";
   };
 
   // Submit Handler with sequential per-file upload + live progress
@@ -211,7 +214,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           setUploadProgress(pct);
           setUploadStatus({
             show: true,
-            message: `Uploading image ${i + 1} of ${total} (${file.name}) to Cloudflare R2...`,
+            message: `Uploading image ${i + 1} of ${total} (${file.name})...`,
             total,
             current: i + 1,
           });
@@ -239,14 +242,14 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
 
       const propertyData = {
         id: initialData?.id,
-        title: formData.get("title") as string,
+        title: titleVal.trim() || (formData.get("title") as string),
         location: getFormattedLocation(),
-        price: Number(formData.get("price")),
+        price: Number(priceVal || formData.get("price")),
         type: selectedType,
         status: selectedStatus,
         bedrooms: 0,
         bathrooms: 0,
-        area: formData.get("area") ? Number(formData.get("area")) : null,
+        area: areaVal ? Number(areaVal) : (formData.get("area") ? Number(formData.get("area")) : null),
         description: description,
         amenities: selectedAmenities,
         images: finalImageList,
@@ -381,6 +384,18 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                       Monthly rent is required.
                     </p>
                   )}
+                  {Number(areaVal) > 0 && (
+                    <div className="mt-2 flex items-center justify-between text-xs text-slate-600 bg-teal-50/70 border border-[#0F766E]/20 p-2 rounded-lg">
+                      <span>Rate: Ksh 80/sq.ft = <strong>Ksh {(Number(areaVal) * 80).toLocaleString()}/mo</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => setPriceVal(String(Number(areaVal) * 80))}
+                        className="text-[#0F766E] font-bold hover:underline cursor-pointer"
+                      >
+                        Apply Rate
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -390,29 +405,25 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
           <div className="bg-slate-50/70 p-5 rounded-xl border border-slate-200/80 space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-wider flex items-center gap-2 text-[#0F172A]">
               <span className="px-2 py-0.5 bg-[#0F766E] text-white text-[10px] font-bold rounded">Step 2 of 5</span>
-              Location &amp; Region
+              Location &amp; Corridor
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  Region *
+                  Commercial Corridor (Quick Select)
                 </label>
                 <Select
-                  value={selectedRegion}
-                  onValueChange={(val) => {
-                    setSelectedRegion(val);
-                    setSelectedLocation("");
-                  }}
-                  required
+                  value={POPULAR_LOCATIONS.includes(selectedLocation) ? selectedLocation : ""}
+                  onValueChange={(val) => setSelectedLocation(val)}
                 >
                   <SelectTrigger className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]">
-                    <SelectValue placeholder="Select Region" />
+                    <SelectValue placeholder="Choose Corridor (Optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    {locationGroups.map((group) => (
-                      <SelectItem key={group.category} value={group.category}>
-                        {group.category}
+                    {POPULAR_LOCATIONS.map((loc) => (
+                      <SelectItem key={loc} value={loc}>
+                        {loc}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -421,34 +432,26 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
 
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
-                  District / Road *
+                  Location / Building Address *
                 </label>
-                <Select
+                <Input
+                  name="location"
+                  placeholder="e.g. Lavington or Riverside Drive, Westlands"
                   value={selectedLocation}
-                  onValueChange={setSelectedLocation}
-                  disabled={!selectedRegion}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  onBlur={() => setTouched((prev) => ({ ...prev, location: true }))}
                   required
-                >
-                  <SelectTrigger className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]">
-                    <SelectValue placeholder={selectedRegion ? "Choose Location" : "Select Region First"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {selectedRegion && (
-                      <>
-                        <SelectItem value={selectedRegion} className="font-semibold text-[#0F766E]">
-                          All {selectedRegion}
-                        </SelectItem>
-                        {locationGroups
-                          .find((g) => g.category === selectedRegion)
-                          ?.items.map((loc) => (
-                            <SelectItem key={loc} value={loc} className="pl-6">
-                              {loc}
-                            </SelectItem>
-                          ))}
-                      </>
-                    )}
-                  </SelectContent>
-                </Select>
+                  className={`bg-white rounded-lg text-sm text-[#0F172A] ${
+                    touched.location && !selectedLocation.trim()
+                      ? "border-rose-500 ring-1 ring-rose-500/30"
+                      : "border-slate-200"
+                  }`}
+                />
+                {touched.location && !selectedLocation.trim() && (
+                  <p className="text-xs text-rose-600 mt-1 font-medium">
+                    Location is required.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -456,7 +459,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               <div className="p-3 bg-white border border-slate-200 rounded-lg flex items-center gap-2 text-xs text-slate-600">
                 <Info className="w-3.5 h-3.5 text-[#0F766E] shrink-0" />
                 <span>
-                  Selected location: <strong className="text-[#0F172A]">{getFormattedLocation()}</strong>
+                  Selected location: <strong className="text-[#0F172A]">{selectedLocation}</strong>
                 </span>
               </div>
             )}
@@ -477,10 +480,21 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                 <Input
                   type="number"
                   name="area"
-                  placeholder="e.g. 120000"
-                  defaultValue={initialData?.area || ""}
+                  placeholder="e.g. 5533"
+                  value={areaVal}
+                  onChange={(e) => {
+                    setAreaVal(e.target.value);
+                    if (e.target.value && (!priceVal || priceVal === "0")) {
+                      setPriceVal(String(Number(e.target.value) * 80));
+                    }
+                  }}
                   className="bg-white border-slate-200 rounded-lg text-sm text-[#0F172A]"
                 />
+                {Number(areaVal) > 0 && (
+                  <p className="text-[11px] text-[#0F766E] font-medium mt-1">
+                    Standard base rent @ Ksh 80/sq.ft: <strong>Ksh {(Number(areaVal) * 80).toLocaleString()} /mo</strong>
+                  </p>
+                )}
               </div>
               <div>
                 <label className="text-xs font-bold text-[#0F172A] uppercase tracking-wider mb-1.5 block">
@@ -698,7 +712,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
               <Loader2 className="w-10 h-10 animate-spin text-[#0F766E]" />
               <div className="text-center">
                 <p className="font-bold text-[#0F172A] text-base" style={{ fontFamily: "Cinzel, Georgia, serif" }}>
-                  Uploading to Cloudflare R2
+                  Uploading
                 </p>
                 <p className="text-slate-500 text-xs mt-1 font-light max-w-xs mx-auto">{uploadStatus.message}</p>
               </div>

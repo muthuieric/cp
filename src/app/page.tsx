@@ -1,14 +1,38 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Building2, BarChart2, Shield, Globe, ArrowRight } from "lucide-react";
-import { getSampleProperties } from "@/lib/sampleProperties";
+import { prisma, isDatabaseConfigured } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const properties = getSampleProperties().slice(0, 6);
-  const featured = properties[0];
-  const rest = properties.slice(1, 5);
+export default async function Home() {
+  let dbProperties: any[] = [];
+  if (isDatabaseConfigured) {
+    try {
+      const results = await prisma.property.findMany({
+        orderBy: { createdAt: "desc" },
+        include: { images: true },
+        take: 6,
+      });
+      dbProperties = results.map((p) => {
+        const rawImg = p.images?.[0]?.url || "/images/hq-commercial-tower.jpg";
+        return {
+          id: p.id,
+          title: p.title || "Commercial Space",
+          location: p.location || "Nairobi",
+          price: Number(p.price) || 0,
+          type: p.type || "Office",
+          status: p.status || "Available",
+          image: rawImg,
+        };
+      });
+    } catch (e) {
+      console.warn("Failed to fetch properties for homepage:", e);
+    }
+  }
+
+  const featured = dbProperties[0];
+  const rest = dbProperties.slice(1, 5);
 
   const stats = [
     { value: "150+", label: "Properties" },
@@ -163,90 +187,92 @@ export default function Home() {
       </div>
 
       {/* ── 3. FEATURED PROPERTIES ────────────────────────────────────── */}
-      <section className="bg-white py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          {/* Section header */}
-          <div className="flex items-end justify-between mb-12">
-            <h2 className="font-cinzel text-[#0F172A] text-3xl sm:text-4xl font-bold">
-              Available Offices &amp; Commercial Spaces
-            </h2>
-            <Link
-              href="/properties"
-              className="text-[#0F766E] hover:text-[#14B8A6] text-sm tracking-wide flex items-center gap-1 cursor-pointer transition-colors duration-200"
-            >
-              View All <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          {/* Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Featured card — spans 2 rows */}
-            {featured && (
+      {dbProperties.length > 0 && (
+        <section className="bg-white py-24">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            {/* Section header */}
+            <div className="flex items-end justify-between mb-12">
+              <h2 className="font-cinzel text-[#0F172A] text-3xl sm:text-4xl font-bold">
+                Available Offices &amp; Commercial Spaces
+              </h2>
               <Link
-                href={`/properties/${featured.id}`}
-                className="relative overflow-hidden md:row-span-2 group cursor-pointer block"
+                href="/properties"
+                className="text-[#0F766E] hover:text-[#14B8A6] text-sm tracking-wide flex items-center gap-1 cursor-pointer transition-colors duration-200"
               >
-                <div className="relative w-full h-80 md:h-full min-h-[480px]">
-                  <Image
-                    src={featured.images[0]}
-                    alt={featured.title}
-                    fill
-                    sizes="(max-width:768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/30 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-6">
-                    <span className="text-[#14B8A6] text-[10px] tracking-[0.25em] uppercase">
-                      {featured.type} · {featured.status}
-                    </span>
-                    <h3 className="font-cinzel text-white text-xl font-bold mt-1 leading-snug">
-                      {featured.title}
-                    </h3>
-                    <p className="text-white/60 text-sm mt-1">{featured.location}</p>
-                    <p className="text-white font-semibold mt-2 text-base">
-                      {formatPrice(featured.price)}
-                    </p>
-                  </div>
-                </div>
+                View All <ArrowRight size={14} />
               </Link>
-            )}
+            </div>
 
-            {/* Remaining cards */}
-            {rest.map((prop) => (
-              <Link
-                key={prop.id}
-                href={`/properties/${prop.id}`}
-                className="relative overflow-hidden group cursor-pointer block"
-              >
-                <div className="relative w-full h-56">
-                  <Image
-                    src={prop.images[0]}
-                    alt={prop.title}
-                    fill
-                    sizes="(max-width:768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/85 via-[#0F172A]/20 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-4">
-                    <span className="text-[#14B8A6] text-[9px] tracking-[0.25em] uppercase">
-                      {prop.type} · {prop.status}
-                    </span>
-                    <h3 className="font-cinzel text-white text-sm font-bold mt-1 leading-snug">
-                      {prop.title}
-                    </h3>
-                    <div className="flex items-center justify-between mt-1">
-                      <p className="text-white/60 text-xs">{prop.location}</p>
-                      <p className="text-white font-semibold text-sm">
-                        {formatPrice(prop.price)}
+            {/* Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Featured card — spans 2 rows */}
+              {featured && (
+                <Link
+                  href={`/properties/${featured.id}`}
+                  className="relative overflow-hidden md:row-span-2 group cursor-pointer block"
+                >
+                  <div className="relative w-full h-80 md:h-full min-h-[480px]">
+                    <Image
+                      src={featured.image}
+                      alt={featured.title}
+                      fill
+                      sizes="(max-width:768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-[#0F172A]/30 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-6">
+                      <span className="text-[#14B8A6] text-[10px] tracking-[0.25em] uppercase">
+                        {featured.type} · {featured.status}
+                      </span>
+                      <h3 className="font-cinzel text-white text-xl font-bold mt-1 leading-snug">
+                        {featured.title}
+                      </h3>
+                      <p className="text-white/60 text-sm mt-1">{featured.location}</p>
+                      <p className="text-white font-semibold mt-2 text-base">
+                        {formatPrice(featured.price)}
                       </p>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )}
+
+              {/* Remaining cards */}
+              {rest.map((prop) => (
+                <Link
+                  key={prop.id}
+                  href={`/properties/${prop.id}`}
+                  className="relative overflow-hidden group cursor-pointer block"
+                >
+                  <div className="relative w-full h-56">
+                    <Image
+                      src={prop.image}
+                      alt={prop.title}
+                      fill
+                      sizes="(max-width:768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/85 via-[#0F172A]/20 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <span className="text-[#14B8A6] text-[9px] tracking-[0.25em] uppercase">
+                        {prop.type} · {prop.status}
+                      </span>
+                      <h3 className="font-cinzel text-white text-sm font-bold mt-1 leading-snug">
+                        {prop.title}
+                      </h3>
+                      <div className="flex items-center justify-between mt-1">
+                        <p className="text-white/60 text-xs">{prop.location}</p>
+                        <p className="text-white font-semibold text-sm">
+                          {formatPrice(prop.price)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── 4. WHY PM ─────────────────────────────────────────────────── */}
       <section className="bg-[#0F172A] py-24">
