@@ -10,7 +10,7 @@ datasource db {
 }
 
 model Property {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   title       String
   location    String
   price       Int
@@ -28,7 +28,7 @@ model Property {
 model Image {
   id         Int      @id @default(autoincrement())
   url        String
-  propertyId Int
+  propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
