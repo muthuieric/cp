@@ -92,7 +92,7 @@ export default async function Home() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/hero-modern-villa.jpg"
-            alt="PM Commercial hero"
+            alt="Karan Holdings hero"
             fill
             priority
             sizes="100vw"
@@ -274,7 +274,7 @@ export default async function Home() {
         </section>
       )}
 
-      {/* ── 4. WHY PM ─────────────────────────────────────────────────── */}
+      {/* ── 4. WHY KARAN HOLDINGS ─────────────────────────────────────── */}
       <section className="bg-[#0F172A] py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           {/* Header */}
@@ -283,7 +283,7 @@ export default async function Home() {
               Our Advantage
             </p>
             <h2 className="font-cinzel text-white text-3xl sm:text-4xl font-bold leading-snug">
-              Why Industry Leaders<br />Choose PM
+              Why Industry Leaders<br />Choose Karan Holdings
             </h2>
           </div>
 

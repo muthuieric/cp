@@ -18,11 +18,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PM Commercial – Commercial Spaces & Offices for Rent in Nairobi",
-    template: "%s | PM Commercial",
+    default: "Karan Holdings – Commercial Spaces & Offices for Rent in Nairobi",
+    template: "%s | Karan Holdings",
   },
   description:
-    "Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces, retail spaces, and offices ready for your business.",
+    "Find and lease premium office and commercial spaces across Nairobi with Karan Holdings. Flexible workspaces, retail spaces, and offices ready for your business.",
   keywords: [
     "Commercial Real Estate Nairobi",
     "Offices for Rent Nairobi",
@@ -30,32 +30,33 @@ export const metadata: Metadata = {
     "Workspaces Kenya",
     "Office Leasing Nairobi",
     "Retail Space Nairobi",
+    "Karan Holdings",
   ],
-  authors: [{ name: "PM Commercial", url: "https://pm-consult.com" }],
-  creator: "PM Commercial",
-  publisher: "PM Commercial",
+  authors: [{ name: "Karan Holdings", url: "https://karanholdings.com" }],
+  creator: "Karan Holdings",
+  publisher: "Karan Holdings",
 
   openGraph: {
     type: "website",
-    url: "https://pm-consult.com",
-    title: "PM Commercial – Commercial Spaces & Offices for Rent in Nairobi",
+    url: "https://karanholdings.com",
+    title: "Karan Holdings – Commercial Spaces & Offices for Rent in Nairobi",
     description:
-      "Find and lease premium office and commercial spaces across Nairobi. Flexible workspaces, retail spaces, and offices ready for your business.",
-    siteName: "PM Commercial",
+      "Find and lease premium office and commercial spaces across Nairobi with Karan Holdings. Flexible workspaces, retail spaces, and offices ready for your business.",
+    siteName: "Karan Holdings",
     images: [
       {
         url: "/og-pm-logo.png",
         width: 1200,
         height: 630,
-        alt: "PM Commercial Offices for Rent Nairobi",
+        alt: "Karan Holdings Offices for Rent Nairobi",
       },
     ],
     locale: "en_US",
   },
 
-  metadataBase: new URL("https://pm-consult.com"),
+  metadataBase: new URL("https://karanholdings.com"),
   alternates: {
-    canonical: "https://pm-consult.com",
+    canonical: "https://karanholdings.com",
   },
 };
 

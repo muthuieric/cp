@@ -29,10 +29,10 @@ export default function Footer() {
               className="text-[#0F766E] font-bold tracking-widest text-2xl group-hover:text-[#14B8A6] transition-colors duration-200"
               style={{ fontFamily: "'Cinzel', serif" }}
             >
-              PM
+              KARAN
             </span>
             <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase mt-[-2px]">
-              Commercial
+              Holdings
             </span>
           </Link>
 
@@ -102,14 +102,14 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="mailto:info@pm-consult.com"
+                href="mailto:info@karanholdings.com"
                 className="flex items-start gap-3 text-white/50 hover:text-[#14B8A6] transition-colors duration-200 cursor-pointer group"
               >
                 <Mail
                   size={15}
                   className="mt-0.5 shrink-0 text-[#0F766E] group-hover:text-[#14B8A6] transition-colors duration-200"
                 />
-                <span className="text-sm font-light">info@pm-consult.com</span>
+                <span className="text-sm font-light">info@karanholdings.com</span>
               </a>
             </li>
             <li>
@@ -137,7 +137,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/30 text-xs tracking-wide">
-            © 2025 PM Commercial. All rights reserved.
+            © 2025 Karan Holdings. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link

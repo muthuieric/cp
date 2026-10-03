@@ -44,10 +44,10 @@ export default function Header() {
             className="text-[#0F766E] font-bold tracking-widest text-xl group-hover:text-[#14B8A6] transition-colors duration-200"
             style={{ fontFamily: "'Cinzel', serif" }}
           >
-            PM
+            KARAN
           </span>
           <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase mt-[-2px]">
-            Commercial
+            Holdings
           </span>
         </Link>
 
@@ -119,10 +119,10 @@ export default function Header() {
                   className="text-[#0F766E] font-bold tracking-widest text-xl"
                   style={{ fontFamily: "'Cinzel', serif" }}
                 >
-                  PM
+                  KARAN
                 </span>
                 <span className="text-white/50 text-[10px] tracking-[0.3em] uppercase mt-[-2px]">
-                  Commercial
+                  Holdings
                 </span>
               </Link>
               <button

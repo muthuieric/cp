@@ -42,7 +42,7 @@ export default function ContactPage() {
     },
     {
       icon: <Mail className="w-5 h-5 text-[#14B8A6] shrink-0 mt-0.5" />,
-      label: "info@pm-consult.com",
+      label: "info@karanholdings.com",
     },
     {
       icon: <Clock className="w-5 h-5 text-[#14B8A6] shrink-0 mt-0.5" />,

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Commercial Advisory & Institutional Services | PM Commercial",
+  title: "Commercial Advisory & Institutional Services | Karan Holdings",
   description:
     "Institutional commercial real estate services across East Africa: property acquisitions, corporate tenant leasing, capital markets, and asset stewardship.",
 };

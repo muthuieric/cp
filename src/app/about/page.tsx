@@ -31,7 +31,7 @@ const team: TeamMember[] = [
   {
     name: "David Mwangi",
     title: "Managing Director",
-    bio: "David leads PM Commercial with over 20 years of experience in East African commercial real estate, driving strategy across corporate leasing, flexible workspace solutions, and tenant advisory.",
+    bio: "David leads Karan Holdings with over 20 years of experience in East African commercial real estate, driving strategy across corporate leasing, flexible workspace solutions, and tenant advisory.",
     image: "https://i.pravatar.cc/500?img=11",
     alt: "David Mwangi, Managing Director",
   },
@@ -88,7 +88,7 @@ export default function AboutPage() {
       <section className="relative h-[60vh] min-h-[440px] pt-16 flex items-center justify-center overflow-hidden">
         <Image
           src="/images/hq-commercial-tower.jpg"
-          alt="Modern commercial skyscraper — PM Commercial"
+          alt="Modern commercial skyscraper — Karan Holdings"
           fill
           sizes="100vw"
           className="object-cover object-center"
@@ -121,9 +121,9 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             <div className="lg:col-span-5">
               <div className="relative aspect-[4/5] w-full overflow-hidden border border-slate-200/90 shadow-md rounded-xl">
-                <Image src="/images/hq-commercial-tower.jpg" alt="PM Commercial HQ, Nairobi" fill sizes="(max-width: 1024px) 100vw, 42vw" className="object-cover object-center" priority />
+                <Image src="/images/hq-commercial-tower.jpg" alt="Karan Holdings HQ, Nairobi" fill sizes="(max-width: 1024px) 100vw, 42vw" className="object-cover object-center" priority />
               </div>
-              <p className="text-slate-500 text-xs mt-3 tracking-wide font-medium">PM Commercial HQ, Nairobi</p>
+              <p className="text-slate-500 text-xs mt-3 tracking-wide font-medium">Karan Holdings HQ, Nairobi</p>
             </div>
             <div className="lg:col-span-7 flex flex-col justify-center">
               <span className="text-[#0F766E] text-[10px] tracking-[0.35em] uppercase font-bold mb-3 block">About Us</span>
@@ -131,7 +131,7 @@ export default function AboutPage() {
                 Pioneering Commercial Excellence Since 2012
               </h2>
               <p className="text-slate-600 text-[15px] leading-relaxed mb-4 font-light">
-                PM Commercial was founded in Nairobi in 2012 with a singular mission: to provide businesses with exceptional commercial spaces and transparent, professional leasing advisory across East Africa.
+                Karan Holdings was founded in Nairobi in 2012 with a singular mission: to provide businesses with exceptional commercial spaces and transparent, professional leasing advisory across East Africa.
               </p>
               <p className="text-slate-600 text-[15px] leading-relaxed mb-4 font-light">
                 Over the past twelve years we have grown into a trusted commercial leasing authority spanning prime office suites, flexible corporate workspaces, tenant representation, and dedicated facilities management.

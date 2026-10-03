@@ -128,7 +128,7 @@ export default function PropertyDetailPage({
           Commercial Asset Not Found
         </h1>
         <p className="text-slate-500 mb-6 text-sm max-w-md">
-          The requested commercial asset dossier does not exist in the PM Commercial institutional registry.
+          The requested commercial asset dossier does not exist in the Karan Holdings institutional registry.
         </p>
         <Link
           href="/properties"

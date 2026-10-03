@@ -22,25 +22,25 @@ export interface PredefinedQA {
 export const WHATSAPP_PHONE = "254768096084";
 export const DISPLAY_PHONE_1 = "0768 096 084";
 export const DISPLAY_PHONE_2 = "0769 90 91 90";
-export const CONTACT_EMAIL = "hello@pm-consult.com";
-export const WEBSITE_URL = "www.pm-consult.com";
+export const CONTACT_EMAIL = "hello@karanholdings.com";
+export const WEBSITE_URL = "www.karanholdings.com";
 
 export function getWhatsAppUrl(customText?: string): string {
   const base = `https://wa.me/${WHATSAPP_PHONE}`;
   if (!customText) {
-    return `${base}?text=${encodeURIComponent("Hello PM Consult! I would like to inquire about your property services.")}`;
+    return `${base}?text=${encodeURIComponent("Hello Karan Holdings! I would like to inquire about your property services.")}`;
   }
   return `${base}?text=${encodeURIComponent(customText)}`;
 }
 
 export const QUICK_PROMPT_CHIPS: QuickChip[] = [
-  { label: "About PM Consult", query: "Who is PM Consult and what do you do?" },
+  { label: "About Karan Holdings", query: "Who is Karan Holdings and what do you do?" },
   { label: "Services Offered", query: "What services do you offer?" },
   { label: "Property Types", query: "What types of properties do you offer?" },
   { label: "Featured Projects", query: "What housing projects and locations do you have?" },
   { label: "Our Approach", query: "What is your approach to real estate?" },
   { label: "Core Values", query: "What are your core values?" },
-  { label: "Contact Details", query: "How do I get in touch with PM Consult?" },
+  { label: "Contact Details", query: "How do I get in touch with Karan Holdings?" },
   { label: "Chat on WhatsApp", query: "Connect me with an agent on WhatsApp" },
 ];
 
@@ -57,10 +57,10 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
       "what do you do",
       "about us"
     ],
-    response: "PM CONSULT is a dynamic real estate consultancy and management company based in Nairobi, Kenya.\n\nTagline: Home is Part of Your Family | Settle for Everything.\n\nWe specialize in providing tailored solutions in property advisory, marketing, management, and project consultancy, ensuring our clients achieve their real estate goals with ease and efficiency.\n\nVision:\nTo be the leading provider of luxury real estate solutions in Nairobi, known for our commitment to excellence, personalized service, and transformative property experiences.\n\nMission:\nWe are dedicated to understanding the unique needs of each client, providing timely solutions, and ensuring the highest standards of service in every transaction.",
+    response: "KARAN HOLDINGS is a dynamic real estate consultancy and management company based in Nairobi, Kenya.\n\nTagline: Home is Part of Your Family | Settle for Everything.\n\nWe specialize in providing tailored solutions in property advisory, marketing, management, and project consultancy, ensuring our clients achieve their real estate goals with ease and efficiency.\n\nVision:\nTo be the leading provider of luxury real estate solutions in Nairobi, known for our commitment to excellence, personalized service, and transformative property experiences.\n\nMission:\nWe are dedicated to understanding the unique needs of each client, providing timely solutions, and ensuring the highest standards of service in every transaction.",
     actions: [
       { label: "View Properties", href: "/properties" },
-      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to learn more about your company and properties." }
+      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to learn more about your company and properties." }
     ]
   },
   {
@@ -75,7 +75,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     response: "Vision:\nTo be the leading provider of luxury real estate solutions in Nairobi, known for our commitment to excellence, personalized service, and transformative property experiences.\n\nMission:\nWe are dedicated to understanding the unique needs of each client, providing timely solutions, and ensuring the highest standards of service in every transaction.",
     actions: [
       { label: "About Page", href: "/about" },
-      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to speak with a representative." }
+      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to speak with a representative." }
     ]
   },
   {
@@ -87,10 +87,10 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
       "why should i work with you",
       "what makes you different"
     ],
-    response: "Why Choose PM Consult:\n\nAt PM CONSULT, we are dedicated to transforming the way you experience real estate. Specializing in luxury properties across Nairobi's prestigious neighborhoods, we connect clients with exquisite homes, upscale apartments, and prime investment opportunities.\n\nWith a commitment to excellence, we pride ourselves on delivering tailored solutions that meet the unique needs of our clients. Whether you are searching for a family home, an off-plan project, or a high-return investment property, we are here to guide you every step of the way.",
+    response: "Why Choose Karan Holdings:\n\nAt KARAN HOLDINGS, we are dedicated to transforming the way you experience real estate. Specializing in luxury properties across Nairobi's prestigious neighborhoods, we connect clients with exquisite homes, upscale apartments, and prime investment opportunities.\n\nWith a commitment to excellence, we pride ourselves on delivering tailored solutions that meet the unique needs of our clients. Whether you are searching for a family home, an off-plan project, or a high-return investment property, we are here to guide you every step of the way.",
     actions: [
       { label: "View Properties", href: "/properties" },
-      { label: "Talk to a Consultant", isWhatsApp: true, whatsappText: "Hello PM Consult! I'd like to discuss my property requirements." }
+      { label: "Talk to a Consultant", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I'd like to discuss my property requirements." }
     ]
   },
   {
@@ -106,7 +106,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     response: "Our 4-Step Approach:\n\n1. Comprehensive Consultation:\nWe begin by understanding the specific goals and aspirations of each client. Our approach is consultative, ensuring that every property aligns with your unique objectives.\n\n2. Personalized Property Experiences:\nWe believe every client deserves an exceptional real estate journey, crafted to their unique preferences and goals. We select properties that align with your lifestyle, whether it is a serene family home in Karen or a high-yield apartment in Westlands.\n\n3. Seamless Implementation:\nOnce we have identified the right property or solution for you, our team handles every step with precision and professionalism. We facilitate smooth negotiations and documentation to secure your property with confidence.\n\n4. Post-Implementation Support:\nOur commitment to your satisfaction does not end at closing; we continue to support you long after the transaction.",
     actions: [
       { label: "Contact Us", href: "/contact" },
-      { label: "Inquire on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to schedule a consultation regarding your property approach." }
+      { label: "Inquire on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to schedule a consultation regarding your property approach." }
     ]
   },
   {
@@ -120,8 +120,8 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     ],
     response: "Our Core Values:\n\n1. Integrity:\nUpholding the highest ethical standards in every interaction, ensuring transparency and trust with our clients.\n\n2. Excellence:\nWe go above and beyond to understand our clients' needs and provide tailored solutions that exceed expectations.\n\n3. Innovation:\nContinuously evolving and exploring new ways to address the unique property needs of each client.\n\n4. Client Success:\nYour satisfaction is at the heart of what we do. We measure our success by the success of our clients, ensuring every interaction is meaningful and results-oriented.",
     actions: [
-      { label: "About PM Consult", href: "/about" },
-      { label: "Speak to Us", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to inquire about your property advisory services." }
+      { label: "About Karan Holdings", href: "/about" },
+      { label: "Speak to Us", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to inquire about your property advisory services." }
     ]
   },
   {
@@ -134,10 +134,10 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
       "services offered",
       "list of services"
     ],
-    response: "Services Offered by PM Consult:\n\n1. Property Advisory:\nWe empower clients with expert advice to make confident, informed decisions by offering expert insights on market trends, rental yields, and lucrative properties and projects.\n\n2. Real Estate Marketing:\nWe craft tailored marketing campaigns using professional photography and engaging property descriptions. We also leverage social media and digital platforms to showcase properties to the right audience.\n\n3. Property Management:\nComprehensive management services, including tenant sourcing, rent collection, budget reports, and property maintenance ensuring smooth operations and optimal returns for landlords.\n\n4. Agency:\nAssisting clients in buying, selling, and leasing high-end residential and commercial properties. Additionally, we help clients identify and acquire prime land for residential or commercial development.",
+    response: "Services Offered by Karan Holdings:\n\n1. Property Advisory:\nWe empower clients with expert advice to make confident, informed decisions by offering expert insights on market trends, rental yields, and lucrative properties and projects.\n\n2. Real Estate Marketing:\nWe craft tailored marketing campaigns using professional photography and engaging property descriptions. We also leverage social media and digital platforms to showcase properties to the right audience.\n\n3. Property Management:\nComprehensive management services, including tenant sourcing, rent collection, budget reports, and property maintenance ensuring smooth operations and optimal returns for landlords.\n\n4. Agency:\nAssisting clients in buying, selling, and leasing high-end residential and commercial properties. Additionally, we help clients identify and acquire prime land for residential or commercial development.",
     actions: [
       { label: "Browse Properties", href: "/properties" },
-      { label: "Request Service on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to inquire about your real estate services." }
+      { label: "Request Service on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to inquire about your real estate services." }
     ]
   },
   {
@@ -152,7 +152,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     ],
     response: "Property Management Service:\n\nWe provide comprehensive management services, including tenant sourcing, rent collection, budget reports, and property maintenance, ensuring smooth operations and optimal returns for landlords.",
     actions: [
-      { label: "Inquire on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to discuss property management for my property." },
+      { label: "Inquire on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to discuss property management for my property." },
       { label: "Contact Us", href: "/contact" }
     ]
   },
@@ -168,7 +168,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     ],
     response: "Property Advisory Service:\n\nWe empower clients with expert advice to make confident, informed decisions by offering expert insights on market trends, rental yields, and lucrative properties and projects.",
     actions: [
-      { label: "Consult on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I am seeking property advisory and market insights." },
+      { label: "Consult on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I am seeking property advisory and market insights." },
       { label: "Contact Us", href: "/contact" }
     ]
   },
@@ -183,7 +183,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     ],
     response: "Real Estate Marketing Service:\n\nWe craft tailored marketing campaigns using professional photography and engaging property descriptions. We also leverage social media and digital platforms to showcase properties to the right audience.",
     actions: [
-      { label: "Discuss Marketing on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like assistance with marketing my property." }
+      { label: "Discuss Marketing on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like assistance with marketing my property." }
     ]
   },
   {
@@ -199,7 +199,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     response: "Agency Services:\n\nAssisting clients in buying, selling, and leasing high-end residential and commercial properties. Additionally, we help clients identify and acquire prime land for residential or commercial development.",
     actions: [
       { label: "View Properties", href: "/properties" },
-      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I need assistance from your real estate agency." }
+      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I need assistance from your real estate agency." }
     ]
   },
   {
@@ -217,7 +217,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     response: "Property Types We Offer:\n\n1. Residential Homes:\nExclusive villas, mansions, and townhouses in Nairobi's prime neighborhoods, such as Runda, Spring Valley, Lower Kabete, and Karen.\n\n2. High End Unfurnished Apartments:\nSpacious apartments fitting urban lifestyles in prime locations like Westlands, Kilimani, and Upper Hill.\n\n3. Serviced and Short-Term Rentals:\nFully furnished units suitable for executive and urban living.\n\n4. Off-Plan Investments:\nUnlocking the potential of off-plan projects and high-return investment opportunities in key business hubs.\n\n5. Commercial Properties:\nPremium office spaces, retail shops, and warehouses designed to meet your business needs.\n\n6. Land:\nPrime plots for residential or commercial development in fast-growing areas around Nairobi and beyond.",
     actions: [
       { label: "Explore Properties", href: "/properties" },
-      { label: "Request Listings on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! Please share available property listings matching my criteria." }
+      { label: "Request Listings on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! Please share available property listings matching my criteria." }
     ]
   },
   {
@@ -242,7 +242,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     response: "Featured Housing Projects & Locations (50+ House Locations across Nairobi):\n\n• Ineza, Runda\n• 1870 West, Westlands\n• Astoria, Lavington\n• Muthaiga Heights\n• Five Star Paradise, Kiambu Road\n• The Convex, Riverside\n• Colloseum, Westlands\n• Terraces, Arboretum\n• GTC, Nairobi\n• Zelig Villas, Lavington\n• Oakland Residences, Westlands\n• Aria Park, Karen\n• One General Mathenge, Westlands\n• The Mandrake, Westlands\n• Saruni, Riverside\n\nWe cover over 50 prime locations across Nairobi and beyond.",
     actions: [
       { label: "Browse Locations", href: "/properties" },
-      { label: "Inquire on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I am inquiring about one of your featured projects/locations." }
+      { label: "Inquire on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I am inquiring about one of your featured projects/locations." }
     ]
   },
   {
@@ -256,9 +256,9 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
       "let's get in touch",
       "contact details"
     ],
-    response: "Contact PM Consult:\n\nPhone: 0768 096 084 / 0769 90 91 90\nEmail: hello@pm-consult.com\nWebsite: www.pm-consult.com\n\nWe are here to make your real estate journey seamless and enjoyable. Whether you are searching for your dream home, a high-yield investment, or expert advice, we would love to hear from you.",
+    response: "Contact Karan Holdings:\n\nPhone: 0768 096 084 / 0769 90 91 90\nEmail: hello@karanholdings.com\nWebsite: www.karanholdings.com\n\nWe are here to make your real estate journey seamless and enjoyable. Whether you are searching for your dream home, a high-yield investment, or expert advice, we would love to hear from you.",
     actions: [
-      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I'd like to get in touch." },
+      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I'd like to get in touch." },
       { label: "Contact Form", href: "/contact" }
     ]
   },
@@ -267,10 +267,10 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     category: "General",
     keywords: ["hi", "hello", "hey", "habari", "mambo", "greetings", "good morning", "good afternoon", "good evening", "sasa"],
     phrases: ["hello", "hi there", "good morning", "good afternoon", "habari yako"],
-    response: "Hello and welcome to PM Consult. How can we assist you today with our property advisory, agency, marketing, or management services?",
+    response: "Hello and welcome to Karan Holdings. How can we assist you today with our property advisory, agency, marketing, or management services?",
     actions: [
       { label: "Browse Properties", href: "/properties" },
-      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like assistance with luxury properties." }
+      { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like assistance with luxury properties." }
     ]
   },
   {
@@ -285,7 +285,7 @@ export const KNOWLEDGE_BASE: PredefinedQA[] = [
     ],
     response: "You can connect directly with our property consultants on WhatsApp for immediate assistance.",
     actions: [
-      { label: "Open WhatsApp Chat", isWhatsApp: true, whatsappText: "Hello PM Consult! I would like to speak directly with a consultant." },
+      { label: "Open WhatsApp Chat", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I would like to speak directly with a consultant." },
       { label: "Call 0768 096 084", href: "tel:+254768096084" }
     ]
   }
@@ -314,7 +314,7 @@ export function findMatchingAnswer(userInput: string): MatchResult {
       isMatch: false,
       response: "Please select a topic or type your question below.",
       actions: [
-        { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello PM Consult! I'd like assistance with properties." }
+        { label: "Chat on WhatsApp", isWhatsApp: true, whatsappText: "Hello Karan Holdings! I'd like assistance with properties." }
       ]
     };
   }
@@ -376,7 +376,7 @@ export function findMatchingAnswer(userInput: string): MatchResult {
   }
 
   // Fallback to WhatsApp
-  const whatsappInquiryText = `Hello PM Consult! I was on your website and had a question: "${userInput}". Could a consultant assist me?`;
+  const whatsappInquiryText = `Hello Karan Holdings! I was on your website and had a question: "${userInput}". Could a consultant assist me?`;
 
   return {
     isMatch: false,

@@ -249,7 +249,7 @@ export default function AdminSettingsPage() {
                 <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block mb-1">
                   Account Identifier
                 </span>
-                <p className="text-xs text-[#0F172A] font-mono font-medium">admin@pmcommercial.com</p>
+                <p className="text-xs text-[#0F172A] font-mono font-medium">admin@karanholdings.com</p>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                   <span>Role: Administrator</span>
                   <span className="text-emerald-600 font-medium">Active</span>

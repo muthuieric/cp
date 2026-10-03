@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     // 2. Validate fallback bootstrap admin credentials
     if (!authenticatedUser) {
       if (
-        normalizedEmail === "admin@pmcommercial.com" &&
+        (normalizedEmail === "admin@karanholdings.com" || normalizedEmail === "admin@pmcommercial.com") &&
         (password === "admin" || password === "Admin123!")
       ) {
         authenticatedUser = {

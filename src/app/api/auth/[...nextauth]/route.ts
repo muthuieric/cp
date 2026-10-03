@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
 
         // 2. Fallback initial bootstrap admin credentials
         if (
-          email === "admin@pmcommercial.com" &&
+          (email === "admin@karanholdings.com" || email === "admin@pmcommercial.com") &&
           (password === "admin" || password === "Admin123!")
         ) {
           return {

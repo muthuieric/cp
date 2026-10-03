@@ -63,7 +63,7 @@ spacing:
   2xl: 64px
 ---
 
-# PM Commercial & Architectural Real Estate Design Specification
+# Karan Holdings & Architectural Real Estate Design Specification
 
 ## Overview
 A modern, brutalist-editorial design system created for luxury commercial real estate, corporate headquarters, and architectural developments in Kenya. The interface moves away from consumer residential templates into austere, museum-grade architectural spatial clarity.

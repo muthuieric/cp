@@ -31,7 +31,7 @@ interface Message {
 const INITIAL_MESSAGE: Message = {
   id: "welcome-1",
   sender: "bot",
-  text: "Welcome to PM Commercial. How may we assist with your asset acquisition or leasing mandates today?",
+  text: "Welcome to Karan Holdings. How may we assist with your asset acquisition or leasing mandates today?",
   time: "Just now",
   actions: [
     { label: "Browse Assets", href: "/properties" },
@@ -55,7 +55,7 @@ export default function HomeChatBot() {
     ? {
         id: `welcome-asset-${activeAsset.id}`,
         sender: "bot",
-        text: `Welcome to PM Commercial Executive Advisory. I see you are viewing ${activeAsset.name} in ${activeAsset.location}. Would you like me to connect you with the lead broker or send the confidential offering memorandum?`,
+        text: `Welcome to Karan Holdings Executive Advisory. I see you are viewing ${activeAsset.name} in ${activeAsset.location}. Would you like me to connect you with the lead broker or send the confidential offering memorandum?`,
         time: "Just now",
         actions: [
           { label: "Request Offering Memo", href: "/contact" },
@@ -74,7 +74,7 @@ export default function HomeChatBot() {
         {
           id: `welcome-asset-${activeAsset.id}`,
           sender: "bot",
-          text: `Welcome to PM Commercial Executive Advisory. I see you are viewing ${activeAsset.name} (${activeAsset.location}). Would you like me to connect you with the lead broker or send the offering memorandum?`,
+          text: `Welcome to Karan Holdings Executive Advisory. I see you are viewing ${activeAsset.name} (${activeAsset.location}). Would you like me to connect you with the lead broker or send the offering memorandum?`,
           time: "Just now",
           actions: [
             { label: "Request Offering Memo", href: "/contact" },
@@ -167,7 +167,7 @@ export default function HomeChatBot() {
   };
 
   return (
-    <aside aria-label="PM Commercial Executive Advisory Desk">
+    <aside aria-label="Karan Holdings Executive Advisory Desk">
       {/* ── Floating Sharp Square Launcher (Matches Header/Footer #0F172A & #0F766E) ── */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         {!isOpen && !hasInteracted && (
@@ -400,7 +400,7 @@ export default function HomeChatBot() {
             </form>
 
             <div className="flex items-center justify-between text-[9px] uppercase tracking-wider text-white/40 px-0.5 font-light">
-              <span>PM Commercial &middot; Executive Advisory</span>
+              <span>Karan Holdings &middot; Executive Advisory</span>
               <span className="text-[#14B8A6]">Encrypted Protocol</span>
             </div>
           </div>

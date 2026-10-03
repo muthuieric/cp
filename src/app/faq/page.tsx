@@ -19,9 +19,9 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question:
-          "What types of commercial spaces does PM Commercial offer for lease?",
+          "What types of commercial spaces does Karan Holdings offer for lease?",
         answer:
-          "PM Commercial focuses on Grade-A office suites, modular workspaces, commercial floors, and prime retail spaces across Nairobi's top commercial corridors, including Westlands, Kilimani, Upper Hill, and Karen. Every space is curated for quality infrastructure, reliable backup power, high-speed fiber connectivity, and dedicated parking.",
+          "Karan Holdings focuses on Grade-A office suites, modular workspaces, commercial floors, and prime retail spaces across Nairobi's top commercial corridors, including Westlands, Kilimani, Upper Hill, and Karen. Every space is curated for quality infrastructure, reliable backup power, high-speed fiber connectivity, and dedicated parking.",
       },
       {
         question: "What are the standard commercial lease terms and duration?",
@@ -42,7 +42,7 @@ const faqData: FAQCategory[] = [
         question:
           "Do you provide on-site property and facilities management?",
         answer:
-          "Yes. PM Commercial oversees comprehensive building operations, including preventative equipment maintenance, utility monitoring, security personnel supervision, and daily facility management to ensure smooth day-to-day operations for all tenants.",
+          "Yes. Karan Holdings oversees comprehensive building operations, including preventative equipment maintenance, utility monitoring, security personnel supervision, and daily facility management to ensure smooth day-to-day operations for all tenants.",
       },
       {
         question: "How is maintenance and tenant support handled during our lease?",
@@ -130,7 +130,7 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h1>
         <p className="text-white/50 mt-4 text-base font-light max-w-xl mx-auto leading-relaxed">
-          Everything you need to know about leasing commercial offices and workspaces with PM Commercial, from initial viewing through to move-in.
+          Everything you need to know about leasing commercial offices and workspaces with Karan Holdings, from initial viewing through to move-in.
         </p>
         {/* Teal underline decoration */}
         <div className="mx-auto mt-6 w-16 h-0.5 bg-[#0F766E]" />
