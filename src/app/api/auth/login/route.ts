@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       ) {
         authenticatedUser = {
           id: "pm-admin-01",
-          email: "admin@pmcommercial.com",
+          email: normalizedEmail,
           name: "Portfolio Administrator",
           role: "ADMIN",
         };

@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const email = session.user.email?.trim().toLowerCase() || "admin@pmcommercial.com";
+    const email = session.user.email?.trim().toLowerCase() || "admin@karanholdings.com";
 
     if (!isDatabaseConfigured) {
       return NextResponse.json(

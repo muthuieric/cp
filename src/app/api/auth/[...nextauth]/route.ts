@@ -11,7 +11,7 @@ export const authOptions: NextAuthOptions = {
         email: {
           label: "Corporate Email",
           type: "email",
-          placeholder: "admin@pmcommercial.com",
+          placeholder: "admin@karanholdings.com",
         },
         password: { label: "Access Token", type: "password" },
       },
@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
           return {
             id: "pm-admin-01",
             name: "Portfolio Administrator",
-            email: "admin@pmcommercial.com",
+            email: email,
             role: "ADMIN",
           };
         }
