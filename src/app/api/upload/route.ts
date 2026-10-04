@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { uploadToR2, isR2Configured } from "@/lib/r2";
 
-const SAMPLE_FALLBACK_IMAGES = [
-  "/images/hero-villa.jpg",
-  "/images/hero-villa.jpg",
-  "/images/hero-villa.jpg",
-  "/images/hero-villa.jpg",
-];
+export const dynamic = "force-dynamic";
+export const maxDuration = 60;
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
@@ -50,10 +47,10 @@ export async function POST(req: Request) {
       urls: uploadedUrls,
       url: uploadedUrls[0] || null,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Upload route error:", error);
     return NextResponse.json(
-      { error: "Failed to process upload" },
+      { error: error?.message || "Failed to process upload" },
       { status: 500 }
     );
   }

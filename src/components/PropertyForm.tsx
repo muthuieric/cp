@@ -80,6 +80,128 @@ const POPULAR_LOCATIONS = [
   "South B",
 ];
 
+/**
+ * Client-side optimization: converts large images (up to 50MB) down to high-definition web standard (2560px, JPEG 0.88),
+ * drastically cutting transfer sizes to ~1MB.
+ */
+async function optimizeImageForUpload(file: File): Promise<File> {
+  if (typeof window === "undefined") return file;
+  if (!file.type.startsWith("image/") || file.type.includes("svg") || file.type.includes("gif")) {
+    return file;
+  }
+  if (file.size <= 1.5 * 1024 * 1024) return file;
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image();
+      img.onload = () => {
+        try {
+          const maxDim = 2560;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return resolve(file);
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob && blob.size < file.size) {
+                const cleanName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                resolve(new File([blob], cleanName, { type: "image/jpeg", lastModified: Date.now() }));
+              } else {
+                resolve(file);
+              }
+            },
+            "image/jpeg",
+            0.88
+          );
+        } catch {
+          resolve(file);
+        }
+      };
+      img.onerror = () => resolve(file);
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Uploads a file of ANY size (up to 50MB+) by first attempting direct presigned URL upload to Cloudflare R2
+ * (completely bypassing Vercel's 4.5MB serverless limit), with automated seamless fallback to optimized proxy upload.
+ */
+async function uploadFileWithBypass(file: File): Promise<string> {
+  // Strategy 1: Direct-to-R2 Presigned PUT (Bypasses Vercel 4.5MB completely)
+  try {
+    const presignRes = await fetch("/api/upload-url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: file.name, contentType: file.type || "image/jpeg" }),
+    });
+
+    if (presignRes.ok) {
+      const { uploadUrl, publicUrl } = await presignRes.json();
+      if (uploadUrl && publicUrl) {
+        const r2PutRes = await fetch(uploadUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type || "image/jpeg",
+          },
+        });
+
+        if (r2PutRes.ok) {
+          return publicUrl;
+        }
+        console.warn("Direct R2 PUT status:", r2PutRes.status, "trying optimized proxy fallback...");
+      }
+    }
+  } catch (directErr) {
+    console.warn("Direct R2 upload bypassed to proxy fallback:", directErr);
+  }
+
+  // Strategy 2: Client-side compressed proxy upload (bypasses 4.5MB by shrinking 50MB down to ~1MB)
+  const preparedFile = await optimizeImageForUpload(file);
+  const formData = new FormData();
+  formData.append("file", preparedFile);
+
+  const proxyRes = await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!proxyRes.ok) {
+    let msg = "Upload failed";
+    try {
+      const errJson = await proxyRes.json();
+      if (errJson.error) msg = errJson.error;
+    } catch {
+      msg = `${proxyRes.status} ${proxyRes.statusText}`;
+    }
+    throw new Error(`Upload error (${file.name}): ${msg}`);
+  }
+
+  const proxyData = await proxyRes.json();
+  const finalUrl = proxyData.url || proxyData.urls?.[0];
+  if (!finalUrl) {
+    throw new Error(`Upload completed for ${file.name} but no public URL was returned.`);
+  }
+
+  return finalUrl;
+}
+
 type PropertyFormProps = {
   initialData?: any;
   onSuccess?: () => void;
@@ -145,15 +267,26 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
     }
   }, [initialData]);
 
-  // Handle Multi-File Selection (up to 20 files)
+  // Handle Multi-File Selection (up to 20 files, each up to 50MB)
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const newFiles = Array.from(e.target.files);
-    const combinedFiles = [...selectedFiles, ...newFiles].slice(0, 20);
+    const incomingFiles = Array.from(e.target.files);
+
+    const oversized = incomingFiles.filter((f) => f.size > 50 * 1024 * 1024);
+    if (oversized.length > 0) {
+      toast.error(
+        `File size limit is 50MB: ${oversized.map((f) => f.name).join(", ")} exceeded 50MB.`
+      );
+    }
+
+    const validFiles = incomingFiles.filter((f) => f.size <= 50 * 1024 * 1024);
+    if (validFiles.length === 0) return;
+
+    const combinedFiles = [...selectedFiles, ...validFiles].slice(0, 20);
     setSelectedFiles(combinedFiles);
 
     // Create object URLs for instant multi-image previews
-    const newPreviewUrls = newFiles.map((file) => URL.createObjectURL(file));
+    const newPreviewUrls = validFiles.map((file) => URL.createObjectURL(file));
     const combinedImages = [...images, ...newPreviewUrls].slice(0, 20);
     setImages(combinedImages);
   };
@@ -201,7 +334,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
     try {
       let finalImageList: string[] = images.filter((url) => !url.startsWith("blob:"));
 
-      // Sequential upload: one file at a time with live progress
+      // Sequential upload: one file at a time with live progress & direct-to-R2 bypass
       if (selectedFiles.length > 0) {
         const total = selectedFiles.length;
         setUploadStatus({ show: true, message: `Preparing ${total} image${total > 1 ? "s" : ""}...`, total, current: 0 });
@@ -218,15 +351,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
             current: i + 1,
           });
 
-          const uploadData = new FormData();
-          uploadData.append("file", file);
-          const uploadRes = await fetch("/api/upload", { method: "POST", body: uploadData });
-
-          if (uploadRes.ok) {
-            const resData = await uploadRes.json();
-            const uploadedUrl = resData.url || resData.urls?.[0];
-            if (uploadedUrl) finalImageList.push(uploadedUrl);
-          }
+          const uploadedUrl = await uploadFileWithBypass(file);
+          finalImageList.push(uploadedUrl);
         }
 
         setUploadProgress(90);
@@ -234,6 +360,9 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       }
 
       if (finalImageList.length === 0) {
+        if (selectedFiles.length > 0) {
+          throw new Error("No images were successfully uploaded. Please try re-selecting your images.");
+        }
         finalImageList = ["/images/hq-commercial-tower.jpg"];
       }
 
@@ -281,9 +410,8 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
       router.refresh();
       if (onSuccess) onSuccess();
     } catch (err: any) {
-      console.warn("Submission notice:", err);
-      toast.error(`Submission error: ${err.message || "Please try again."}`);
-      if (onSuccess) onSuccess();
+      console.warn("Submission error:", err);
+      toast.error(err.message || "Submission failed. Please check details and try again.");
     } finally {
       setLoading(false);
       setUploadProgress(0);
@@ -645,7 +773,7 @@ export default function PropertyForm({ initialData, onSuccess }: PropertyFormPro
                 <UploadCloud className="w-9 h-9 text-[#0F766E]" />
                 <div className="space-y-1">
                   <p className="text-xs sm:text-sm font-semibold text-[#0F172A]">Select multiple photography files</p>
-                  <p className="text-[11px] text-slate-400">Select high-quality photography files (JPG, PNG, WebP)</p>
+                  <p className="text-[11px] text-slate-400">High-resolution photography files supported (up to 50MB per image: JPG, PNG, WebP)</p>
                 </div>
                 <label className="w-full sm:w-auto cursor-pointer inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#0F766E] hover:bg-[#0D9488] text-white rounded-lg text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm">
                   <UploadCloud className="w-4 h-4" />

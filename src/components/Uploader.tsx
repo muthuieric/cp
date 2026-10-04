@@ -85,33 +85,65 @@ export default function Uploader({ onSuccess, maxSizeMB = 50 }: UploaderProps) {
     setProgress(20);
 
     try {
-      const fileToUpload = await optimizeImage(file);
-      setProgress(40);
+      setProgress(20);
+      let finalUrl: string | null = null;
 
-      const formData = new FormData();
-      formData.append("file", fileToUpload);
+      // 1. Direct Presigned URL upload to Cloudflare R2 (Bypasses Vercel 4.5MB completely)
+      try {
+        const presignRes = await fetch("/api/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: file.name, contentType: file.type || "image/jpeg" }),
+        });
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        let msg = "Upload failed";
-        try {
-          const json = await res.json();
-          if (json.error) msg = json.error;
-        } catch {
-          msg = `${res.status} ${res.statusText}`;
+        if (presignRes.ok) {
+          const { uploadUrl, publicUrl } = await presignRes.json();
+          if (uploadUrl && publicUrl) {
+            const r2PutRes = await fetch(uploadUrl, {
+              method: "PUT",
+              body: file,
+              headers: { "Content-Type": file.type || "image/jpeg" },
+            });
+            if (r2PutRes.ok) {
+              finalUrl = publicUrl;
+            }
+          }
         }
-        throw new Error(msg);
+      } catch (e) {
+        console.warn("Direct upload fallback to proxy:", e);
       }
 
-      const data = await res.json();
-      setProgress(100);
+      // 2. Fallback to client-side optimized proxy upload
+      if (!finalUrl) {
+        setProgress(40);
+        const fileToUpload = await optimizeImage(file);
+        setProgress(60);
 
-      const finalUrl = data.url || data.urls?.[0];
+        const formData = new FormData();
+        formData.append("file", fileToUpload);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          let msg = "Upload failed";
+          try {
+            const json = await res.json();
+            if (json.error) msg = json.error;
+          } catch {
+            msg = `${res.status} ${res.statusText}`;
+          }
+          throw new Error(msg);
+        }
+
+        const data = await res.json();
+        finalUrl = data.url || data.urls?.[0];
+      }
+
       if (finalUrl) {
+        setProgress(100);
         setUploadedUrl(finalUrl);
         toast.success("Photo uploaded successfully");
         if (onSuccess) onSuccess(finalUrl);
